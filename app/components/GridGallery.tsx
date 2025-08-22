@@ -53,7 +53,7 @@ export default function GridGallery({ artworks, onArtworkClick }: GridGalleryPro
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20 sm:pt-24 md:pt-32 mobile-nav-padding">
+    <div className="min-h-screen bg-gray-50 dark:bg-black pt-20 sm:pt-24 md:pt-32 mobile-nav-padding">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 large-container">
         {/* 标题区域 */}
         <div className="text-center mb-12">
@@ -99,7 +99,7 @@ export default function GridGallery({ artworks, onArtworkClick }: GridGalleryPro
                 placeholder="搜索作品、艺术家或标签..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-300 hover:shadow-md"
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 caret-black dark:caret-white rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-300 hover:shadow-md"
               />
               {searchTerm && (
                 <motion.button
@@ -119,7 +119,7 @@ export default function GridGallery({ artworks, onArtworkClick }: GridGalleryPro
             {/* 筛选按钮 */}
             <motion.button
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="flex items-center space-x-2 px-6 py-3 bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-all duration-300 hover:shadow-md"
+              className="flex items-center space-x-2 px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 hover:shadow-md"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -135,7 +135,7 @@ export default function GridGallery({ artworks, onArtworkClick }: GridGalleryPro
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                className="mt-4 p-4 bg-white border border-gray-200 rounded-lg shadow-sm"
+                className="mt-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm"
               >
                 <div className="flex flex-wrap gap-2">
                   {categories.map((category) => (
@@ -146,7 +146,7 @@ export default function GridGallery({ artworks, onArtworkClick }: GridGalleryPro
                         'px-4 py-2 rounded-full text-sm font-medium transition-all duration-300',
                         selectedCategory === category.id
                           ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 hover:shadow-md'
                       )}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}

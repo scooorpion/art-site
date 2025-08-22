@@ -14,7 +14,7 @@ export default function GridGalleryPage() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-black">
       <Navigation currentView="grid" />
       <GridGallery
         artworks={artworks}

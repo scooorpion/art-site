@@ -18,6 +18,7 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [readingMode, setReadingMode] = useState(false);
+  const [direction, setDirection] = useState(0);
 
   // 如果有选中的作品，找到其索引
   useEffect(() => {
@@ -32,10 +33,12 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
   const currentArtwork = artworks[currentIndex];
 
   const goToPrevious = () => {
+    setDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + artworks.length) % artworks.length);
   };
 
   const goToNext = () => {
+    setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % artworks.length);
   };
 
@@ -146,7 +149,7 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
 
       {/* 主内容区域 */}
       <div className="relative w-full h-full overflow-hidden">
-        <AnimatePresence mode="wait" custom={1}>
+        <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={currentIndex}
             custom={1}
@@ -155,8 +158,8 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
             animate="center"
             exit="exit"
             transition={{
-              x: { type: "spring", stiffness: 300, damping: 30 },
-              opacity: { duration: 0.2 }
+              x: { type: "spring", stiffness: 400, damping: 40 },
+              opacity: { duration: 0.1 }
             }}
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}

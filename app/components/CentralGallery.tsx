@@ -61,7 +61,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
   const sideArtworks = getSideArtworks();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white pt-20 sm:pt-24 md:pt-32 mobile-nav-padding">
+    <div className="min-h-screen bg-white dark:bg-black text-gray-800 dark:text-white pt-20 sm:pt-24 md:pt-32 mobile-nav-padding">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 large-container">
         {/* 标题区域 */}
         <div className="text-center mb-12">
@@ -82,7 +82,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-lg text-gray-300 max-w-2xl mx-auto"
+            className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto"
           >
             沉浸式艺术体验，每一幅作品都值得细细品味
           </motion.p>

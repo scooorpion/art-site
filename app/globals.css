@@ -25,13 +25,16 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #000000;
     --foreground: #fafafa;
     --muted: #1a1a1a;
     --muted-foreground: #a3a3a3;
     --border: #262626;
     --accent: #1a1a1a;
     --accent-foreground: #fafafa;
+  }
+  body {
+    background: #000000;
   }
 }
 

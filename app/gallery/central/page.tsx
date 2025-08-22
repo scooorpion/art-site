@@ -14,7 +14,7 @@ export default function CentralGalleryPage() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white dark:bg-black">
       <Navigation currentView="central" />
       <CentralGallery
         artworks={artworks}

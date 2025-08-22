@@ -21,7 +21,7 @@ function StoryGalleryContent() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white dark:bg-black">
       <Navigation currentView="story" />
       <StoryGallery
         artworks={artworks}
