@@ -185,7 +185,7 @@ export default function GridGallery({ artworks, onArtworkClick }: GridGalleryPro
                 onClick={() => onArtworkClick(artwork)}
                 whileHover={{ y: -8 }}
               >
-                <div className="bg-white rounded-xl shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden">
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden">
                   {/* 图片容器 */}
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <OptimizedImage
@@ -249,17 +249,17 @@ export default function GridGallery({ artworks, onArtworkClick }: GridGalleryPro
 
                   {/* 作品信息 */}
                   <motion.div
-                    className="p-4"
+                    className="p-4 bg-white dark:bg-gray-900"
                     initial={{ opacity: 0.8 }}
                     whileHover={{ opacity: 1 }}
                   >
-                    <h3 className="font-serif text-lg font-semibold text-gray-900 mb-1 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-pink-600 group-hover:bg-clip-text transition-all duration-300">
+                    <h3 className="font-serif text-lg font-semibold text-gray-900 dark:text-white mb-1 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-pink-600 group-hover:bg-clip-text transition-all duration-300">
                       {artwork.title}
                     </h3>
-                    <p className="text-gray-600 text-sm mb-2 group-hover:text-gray-800 transition-colors duration-200">
+                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-2 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-200">
                       {artwork.artist} · {artwork.year}
                     </p>
-                    <p className="text-gray-500 text-xs mb-3">
+                    <p className="text-gray-500 dark:text-gray-400 text-xs mb-3">
                       {artwork.medium} · {artwork.dimensions}
                     </p>
                     
@@ -268,13 +268,13 @@ export default function GridGallery({ artworks, onArtworkClick }: GridGalleryPro
                       {artwork.tags.slice(0, 3).map((tag) => (
                         <span
                           key={tag}
-                          className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"
+                          className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs rounded-full"
                         >
                           {tag}
                         </span>
                       ))}
                       {artwork.tags.length > 3 && (
-                        <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                        <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs rounded-full">
                           +{artwork.tags.length - 3}
                         </span>
                       )}

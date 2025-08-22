@@ -61,10 +61,10 @@ export default function Navigation({ currentView }: NavigationProps) {
         transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
         className="hidden md:flex fixed top-8 left-1/2 transform -translate-x-1/2 z-50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 rounded-full px-6 py-3 shadow-2xl"
       >
-        <div className="flex items-center space-x-8">
+        <div className="flex items-center space-x-4 lg:space-x-8">
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="flex items-center space-x-3"
+            className="flex items-center space-x-2 lg:space-x-3 flex-shrink-0"
           >
             <motion.div
               animate={{ rotate: 360 }}
@@ -82,7 +82,7 @@ export default function Navigation({ currentView }: NavigationProps) {
               </GradientText>
             </AnimatedText>
           </motion.div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1 lg:space-x-2">
             {navItems.map((item, index) => {
               const Icon = item.icon;
               const isActive = currentView === item.id;
@@ -97,9 +97,9 @@ export default function Navigation({ currentView }: NavigationProps) {
                   <motion.button
                     onClick={() => handleViewChange(item.id)}
                     className={clsx(
-                      'relative flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 group',
+                      'relative flex items-center space-x-1 lg:space-x-2 px-3 lg:px-4 py-2 rounded-full transition-all duration-300 group',
                       isActive
-                        ? 'text-white shadow-lg shadow-purple-500/25'
+                        ? 'text-white'
                         : 'text-gray-600 hover:text-gray-900'
                     )}
                     whileHover={{ scale: 1.05 }}
@@ -108,13 +108,14 @@ export default function Navigation({ currentView }: NavigationProps) {
                     {isActive && (
                       <motion.div
                         layoutId="activeBackground"
-                        className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full"
+                        className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full overflow-hidden"
                         initial={false}
                         transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                        style={{ borderRadius: '9999px' }}
                       />
                     )}
-                    <Icon size={18} className="relative z-10" />
-                    <span className="text-sm font-medium relative z-10">{item.label}</span>
+                    <Icon size={18} className="relative z-10 flex-shrink-0" />
+                    <span className="text-sm font-medium relative z-10 whitespace-nowrap">{item.label}</span>
                     
                     {!isActive && (
                       <motion.div
@@ -158,7 +159,7 @@ export default function Navigation({ currentView }: NavigationProps) {
             </div>
             <motion.button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-full hover:bg-gray-100/50 transition-colors relative"
+              className="p-2 rounded-full hover:bg-gray-100/50 dark:hover:bg-gray-700/50 transition-colors relative"
               whileTap={{ scale: 0.95 }}
               whileHover={{ scale: 1.05 }}
             >
@@ -213,8 +214,8 @@ export default function Navigation({ currentView }: NavigationProps) {
                           className={clsx(
                             'w-full flex items-center space-x-4 px-4 py-4 rounded-xl transition-all duration-300 text-left relative group',
                             isActive
-                              ? 'text-white shadow-lg'
-                              : 'text-gray-600 hover:text-gray-900'
+                              ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+                              : 'bg-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white dark:hover:bg-white/10'
                           )}
                           whileHover={{ scale: 1.02, x: 4 }}
                           whileTap={{ scale: 0.98 }}
@@ -236,7 +237,7 @@ export default function Navigation({ currentView }: NavigationProps) {
                           
                           <Icon size={22} className="relative z-10" />
                           <div className="relative z-10">
-                            <div className="font-medium text-base">{item.label}</div>
+                            <div className="font-medium text-base text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white">{item.label}</div>
                             <div className={clsx(
                               'text-sm transition-colors duration-300',
                               isActive ? 'text-white/80' : 'text-gray-500 dark:text-gray-400'
