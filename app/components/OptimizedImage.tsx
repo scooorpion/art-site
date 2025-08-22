@@ -47,10 +47,11 @@ export default function OptimizedImage({
     <div
       className={clsx(
         'relative overflow-hidden bg-gray-100',
+        fill && 'w-full h-full',
         onClick && 'cursor-pointer',
         className
       )}
-      style={aspectRatio ? { aspectRatio } : { width, height }}
+      style={fill ? { width: '100%', height: '100%' } : (aspectRatio ? { aspectRatio } : { width, height })}
       onClick={onClick}
     >
       {hasError && (
