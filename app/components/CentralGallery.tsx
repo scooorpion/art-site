@@ -103,23 +103,22 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
               return (
                 <motion.div
                   key={`${index}-${position}-${offset}`}
-                  className="absolute cursor-pointer"
+                  className="absolute cursor-pointer group"
                   style={{
                     transform: `translateX(${translateX}px) scale(${scale})`,
                     opacity,
                     zIndex
                   }}
                   onClick={() => goToIndex(index)}
-                  whileHover={{ scale: scale * 1.05 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <div className="w-48 h-64 rounded-lg overflow-hidden shadow-2xl">
+                  <div className="w-48 h-64 rounded-lg overflow-hidden shadow-2xl transform group-hover:scale-105 transition-transform duration-300">
                     <OptimizedImage
                       src={artwork.image}
                       alt={artwork.title}
                       fill
                       sizes="200px"
-                      className="hover:brightness-110 transition-all duration-300"
+                      className="group-hover:brightness-110 transition-all duration-300"
                     />
                   </div>
                 </motion.div>
@@ -137,7 +136,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
             className="relative z-20 cursor-pointer group"
             onClick={() => onArtworkClick(currentArtwork)}
           >
-            <div className="w-72 h-80 sm:w-80 sm:h-96 md:w-96 md:h-[480px] lg:w-[420px] lg:h-[520px] rounded-xl overflow-hidden shadow-2xl">
+            <div className="w-80 h-80 sm:w-80 sm:h-96 md:w-96 md:h-[480px] lg:w-[420px] lg:h-[520px] rounded-xl overflow-hidden shadow-2xl">
               <OptimizedImage
                 src={currentArtwork.image}
                 alt={currentArtwork.title}

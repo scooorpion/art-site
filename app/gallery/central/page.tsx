@@ -10,7 +10,11 @@ export default function CentralGalleryPage() {
   const router = useRouter();
 
   const handleArtworkClick = (artwork: Artwork) => {
-    router.push(`/gallery/story?artwork=${artwork.id}`);
+    try {
+      router.push(`/gallery/story?artwork=${artwork.id}`);
+    } catch (error) {
+      console.error('Navigation error:', error);
+    }
   };
 
   return (

@@ -8,7 +8,11 @@ export default function Home() {
 
   useEffect(() => {
     // 重定向到默认的画廊页面
-    router.push('/gallery/grid');
+    try {
+      router.push('/gallery/grid');
+    } catch (error) {
+      console.error('Navigation error:', error);
+    }
   }, [router]);
 
   return (

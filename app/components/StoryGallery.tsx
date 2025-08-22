@@ -67,7 +67,7 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
     },
     exit: (direction: number) => ({
       zIndex: 0,
-      x: direction < 0 ? 1000 : -1000,
+      x: direction > 0 ? -1000 : 1000,
       opacity: 0
     })
   };
@@ -149,16 +149,16 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
 
       {/* 主内容区域 */}
       <div className="relative w-full h-full overflow-hidden">
-        <AnimatePresence mode="wait" custom={direction}>
+        <AnimatePresence mode="sync" custom={direction}>
           <motion.div
             key={currentIndex}
-            custom={1}
+            custom={direction}
             variants={pageVariants}
             initial="enter"
             animate="center"
             exit="exit"
             transition={{
-              x: { type: "spring", stiffness: 400, damping: 40 },
+              x: { type: "spring", stiffness: 300, damping: 30 },
               opacity: { duration: 0.1 }
             }}
             drag="x"

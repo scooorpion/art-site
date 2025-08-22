@@ -18,16 +18,25 @@ export default function Navigation({ currentView }: NavigationProps) {
   const router = useRouter();
 
   const handleViewChange = (view: ViewMode) => {
-    switch (view) {
-      case 'grid':
-        router.push('/gallery/grid');
-        break;
-      case 'central':
-        router.push('/gallery/central');
-        break;
-      case 'story':
-        router.push('/gallery/story');
-        break;
+    // 防止重复导航到当前页面
+    if (view === currentView) {
+      return;
+    }
+    
+    try {
+      switch (view) {
+        case 'grid':
+          router.push('/gallery/grid');
+          break;
+        case 'central':
+          router.push('/gallery/central');
+          break;
+        case 'story':
+          router.push('/gallery/story');
+          break;
+      }
+    } catch (error) {
+      console.error('Navigation error:', error);
     }
   };
 

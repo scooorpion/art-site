@@ -17,7 +17,11 @@ function StoryGalleryContent() {
     : undefined;
 
   const handleClose = () => {
-    router.push('/gallery/grid');
+    try {
+      router.push('/gallery/grid');
+    } catch (error) {
+      console.error('Navigation error:', error);
+    }
   };
 
   return (
