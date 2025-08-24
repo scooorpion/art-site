@@ -109,7 +109,7 @@ export default function Navigation({ currentView }: NavigationProps) {
                       'relative flex items-center space-x-1 lg:space-x-2 px-3 lg:px-4 py-2 rounded-full transition-all duration-300 group',
                       isActive
                         ? 'text-white'
-                        : 'text-gray-600 hover:text-gray-900'
+                        : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                     )}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}

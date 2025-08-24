@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Filter, Search, X, Heart, Share2, Eye } from 'lucide-react';
 import OptimizedImage, { imageSizes, aspectRatios } from './OptimizedImage';
 import { Artwork } from '../data/artworks';
 import { clsx } from 'clsx';
 import AnimatedText from './AnimatedText';
+// 移除动态尺寸相关的导入
 
 interface GridGalleryProps {
   artworks: Artwork[];
@@ -17,13 +18,15 @@ export default function GridGallery({ artworks, onArtworkClick }: GridGalleryPro
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  
+  // 移除动态尺寸相关的状态和效果
 
-  const categories = [
+  const categories = useMemo(() => [
     { id: 'all', label: '全部作品' },
     { id: 'oil', label: '油画' },
     { id: 'sketch', label: '素描' },
     { id: 'mixed', label: '综合材料' }
-  ];
+  ], []);
 
   const filteredArtworks = useMemo(() => {
     return artworks.filter(artwork => {
@@ -132,9 +135,17 @@ export default function GridGallery({ artworks, onArtworkClick }: GridGalleryPro
           <AnimatePresence>
             {isFilterOpen && (
               <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ 
+                  opacity: 1, 
+                  y: 0,
+                  transition: { type: "spring", stiffness: 300, damping: 30 }
+                }}
+                exit={{ 
+                  opacity: 0, 
+                  y: -20,
+                  transition: { duration: 0.2 }
+                }}
                 className="mt-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm"
               >
                 <div className="flex flex-wrap gap-2">
@@ -163,7 +174,7 @@ export default function GridGallery({ artworks, onArtworkClick }: GridGalleryPro
         {/* 结果统计 */}
         <div className="mb-6">
           <p className="text-gray-600">
-            共找到 <span className="font-semibold text-gray-900">{filteredArtworks.length}</span> 件作品
+            共找到 <span className="font-semibold text-gray-900 dark:text-white">{filteredArtworks.length}</span> 件作品
           </p>
         </div>
 
@@ -187,14 +198,13 @@ export default function GridGallery({ artworks, onArtworkClick }: GridGalleryPro
               >
                 <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden">
                   {/* 图片容器 */}
-                  <div className="relative aspect-[4/3] overflow-hidden">
+                  <div className="relative aspect-[4/3] overflow-hidden transition-all duration-300 ease-in-out">
                     <OptimizedImage
                       src={artwork.image}
                       alt={artwork.title}
                       fill
                       sizes={imageSizes.gallery}
                       className="group-hover:scale-110 transition-transform duration-700"
-                      aspectRatio={aspectRatios.landscape}
                     />
                     
                     {/* 渐变遮罩 */}

@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X, Maximize, Minimize, Info, BookOpen, Eye, Heart, Share2 } from 'lucide-react';
 import OptimizedImage, { imageSizes, aspectRatios } from './OptimizedImage';
 import { Artwork } from '../data/artworks';
 import { clsx } from 'clsx';
 import AnimatedText from './AnimatedText';
+// 移除动态尺寸相关的导入
 
 interface StoryGalleryProps {
   artworks: Artwork[];
@@ -19,6 +20,11 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [readingMode, setReadingMode] = useState(false);
   const [direction, setDirection] = useState(0);
+  
+  // 使用useMemo缓存当前作品
+  const currentArtwork = useMemo(() => artworks[currentIndex], [artworks, currentIndex]);
+  
+  // 移除所有动态样式计算相关的代码
 
   // 如果有选中的作品，找到其索引
   useEffect(() => {
@@ -30,17 +36,28 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
     }
   }, [selectedArtwork, artworks]);
 
-  const currentArtwork = artworks[currentIndex];
 
-  const goToPrevious = () => {
-    setDirection(-1);
-    setCurrentIndex((prev) => (prev - 1 + artworks.length) % artworks.length);
-  };
 
-  const goToNext = () => {
-    setDirection(1);
-    setCurrentIndex((prev) => (prev + 1) % artworks.length);
-  };
+  const goToPrevious = useCallback(() => {
+    if (currentIndex > 0) {
+      setDirection(-1);
+      setCurrentIndex((prev) => prev - 1);
+    }
+  }, [currentIndex]);
+
+  const goToNext = useCallback(() => {
+    if (currentIndex < artworks.length - 1) {
+      setDirection(1);
+      setCurrentIndex((prev) => prev + 1);
+    }
+  }, [currentIndex, artworks.length]);
+
+  const goToSlide = useCallback((index: number) => {
+    if (index !== currentIndex) {
+      setDirection(index > currentIndex ? 1 : -1);
+      setCurrentIndex(index);
+    }
+  }, [currentIndex]);
 
   // 键盘导航
   useEffect(() => {
@@ -53,7 +70,7 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [isFullscreen]);
+  }, [isFullscreen, currentIndex, artworks.length]);
 
   const pageVariants = {
     enter: (direction: number) => ({
@@ -179,14 +196,16 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
               <div className="w-full h-full flex">
                 {/* 左侧图片 */}
                 <div className="w-1/2 h-full relative p-8">
-                  <div className="w-full h-full relative">
+                  <div 
+                    className="w-full h-full relative flex items-center justify-center"
+                  >
                     <OptimizedImage
                       src={currentArtwork.image}
                       alt={currentArtwork.title}
                       fill
                       sizes="50vw"
                       priority
-                      objectFit="contain"
+                      className="object-contain"
                     />
                   </div>
                 </div>
@@ -227,7 +246,7 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
                           {currentArtwork.tags.map((tag) => (
                             <span
                               key={tag}
-                              className="px-3 py-1 bg-white/20 text-white text-sm rounded-full"
+                              className="px-3 py-1 bg-white/20 dark:bg-gray-800/60 text-white dark:text-gray-200 text-sm rounded-full"
                             >
                               {tag}
                             </span>
@@ -242,14 +261,16 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
               // 沉浸模式布局
               <div className="w-full h-full relative">
                 {/* 背景图片 */}
-                <div className="absolute inset-0">
+                <div 
+                  className="absolute inset-0 flex items-center justify-center"
+                >
                   <OptimizedImage
                     src={currentArtwork.image}
                     alt={currentArtwork.title}
                     fill
                     sizes="100vw"
                     priority
-                    objectFit="contain"
+                    className="object-contain"
                   />
                 </div>
                 
@@ -291,9 +312,15 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               onClick={goToPrevious}
-              className="absolute left-6 top-1/2 transform -translate-y-1/2 z-10 p-3 bg-black/50 hover:bg-black/70 rounded-full transition-colors text-white"
-              whileHover={{ scale: 1.1, x: -2 }}
-              whileTap={{ scale: 0.95 }}
+              disabled={currentIndex === 0}
+              className={clsx(
+                "absolute left-6 top-1/2 transform -translate-y-1/2 z-10 p-3 rounded-full transition-colors text-white",
+                currentIndex === 0
+                  ? "bg-black/20 cursor-not-allowed opacity-50"
+                  : "bg-black/50 hover:bg-black/70"
+              )}
+              whileHover={currentIndex > 0 ? { scale: 1.1, x: -2 } : {}}
+              whileTap={currentIndex > 0 ? { scale: 0.95 } : {}}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
               <ChevronLeft size={24} />
@@ -304,9 +331,15 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               onClick={goToNext}
-              className="absolute right-6 top-1/2 transform -translate-y-1/2 z-10 p-3 bg-black/50 hover:bg-black/70 rounded-full transition-colors text-white"
-              whileHover={{ scale: 1.1, x: 2 }}
-              whileTap={{ scale: 0.95 }}
+              disabled={currentIndex === artworks.length - 1}
+              className={clsx(
+                "absolute right-6 top-1/2 transform -translate-y-1/2 z-10 p-3 rounded-full transition-colors text-white",
+                currentIndex === artworks.length - 1
+                  ? "bg-black/20 cursor-not-allowed opacity-50"
+                  : "bg-black/50 hover:bg-black/70"
+              )}
+              whileHover={currentIndex < artworks.length - 1 ? { scale: 1.1, x: 2 } : {}}
+              whileTap={currentIndex < artworks.length - 1 ? { scale: 0.95 } : {}}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
               <ChevronRight size={24} />
@@ -315,7 +348,7 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
         )}
       </AnimatePresence>
 
-      {/* 底部进度条 */}
+      {/* 底部预览 */}
       <AnimatePresence>
         {!isFullscreen && (
           <motion.div
@@ -324,22 +357,48 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
             exit={{ opacity: 0, y: 20 }}
             className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10"
           >
-            <div className="flex items-center space-x-2 bg-black/50 rounded-full px-4 py-2">
-              {artworks.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentIndex(index)}
-                  className={clsx(
-                    'w-2 h-2 rounded-full transition-all duration-300',
-                    index === currentIndex
-                      ? 'bg-white w-8'
-                      : 'bg-white/40 hover:bg-white/60'
-                  )}
-                />
-              ))}
-              <span className="text-white text-sm ml-3">
-                {currentIndex + 1} / {artworks.length}
-              </span>
+            <div className="bg-black/80 backdrop-blur-sm rounded-lg p-4">
+              <div className="flex space-x-4 overflow-x-auto">
+                {artworks.map((artwork, index) => {
+                  // 使用固定缩略图尺寸
+                  const thumbnailSize = { width: 80, height: 96 };
+                  
+                  return (
+                    <motion.div
+                      key={artwork.id}
+                      className={clsx(
+                        "flex-shrink-0 relative cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-300",
+                        index === currentIndex
+                          ? "border-white shadow-lg scale-110"
+                          : "border-transparent hover:border-white/50"
+                      )}
+                      style={{
+                        width: `${thumbnailSize.width}px`,
+                        height: `${thumbnailSize.height}px`
+                      }}
+                      onClick={() => goToSlide(index)}
+                      whileHover={{ scale: index === currentIndex ? 1.1 : 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <OptimizedImage
+                        src={artwork.image}
+                        alt={artwork.title}
+                        fill
+                        sizes="80px"
+                        className="object-cover"
+                      />
+                      {index === currentIndex && (
+                        <div className="absolute inset-0 bg-white/20" />
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </div>
+              <div className="flex items-center justify-center mt-3">
+                <span className="text-white text-sm">
+                  {currentIndex + 1} / {artworks.length}
+                </span>
+              </div>
             </div>
           </motion.div>
         )}

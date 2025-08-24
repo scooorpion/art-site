@@ -1,12 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Play, Pause, Info, X, Heart, Share2 } from 'lucide-react';
 import OptimizedImage, { imageSizes, aspectRatios } from './OptimizedImage';
 import { Artwork } from '../data/artworks';
 import { clsx } from 'clsx';
 import AnimatedText from './AnimatedText';
+import { useImageDimensions, useMultipleImageDimensions } from '../hooks/useImageDimensions';
+import { 
+  getResponsiveLayoutConfig, 
+  calculateOptimalSize, 
+  calculateSideImageLayout,
+  generateDynamicStyles 
+} from '../utils/dynamicSizing';
 
 interface CentralGalleryProps {
   artworks: Artwork[];
@@ -15,10 +22,49 @@ interface CentralGalleryProps {
 
 export default function CentralGallery({ artworks, onArtworkClick }: CentralGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAutoPlay, setIsAutoPlay] = useState(true);
+  const [isAutoPlay, setIsAutoPlay] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  
+  // 使用useMemo缓存图片URL数组，避免每次渲染都重新计算
+  const imageUrls = useMemo(() => artworks.map(artwork => artwork.image), [artworks]);
+  
+  // 获取所有图片的尺寸信息
+  const imageDimensions = useMultipleImageDimensions();
+  
+  // 获取当前主图片的尺寸
+  const currentImageDimensions = useImageDimensions();
+  
+  // 使用useMemo缓存当前作品，避免不必要的重新计算
+  const currentArtwork = useMemo(() => artworks[currentIndex], [artworks, currentIndex]);
+  
+  // 加载图片尺寸
+  useEffect(() => {
+    if (imageUrls.length > 0) {
+      imageDimensions.loadImages(imageUrls);
+    }
+  }, [imageUrls, imageDimensions.loadImages]);
+  
+  useEffect(() => {
+    if (currentArtwork?.image) {
+      currentImageDimensions.loadImage(currentArtwork.image);
+    }
+  }, [currentArtwork?.image, currentImageDimensions.loadImage]);
+  
+  // 获取响应式布局配置
+  const [layoutConfig, setLayoutConfig] = useState(() => getResponsiveLayoutConfig());
+  
+  // 使用useCallback缓存resize处理函数
+  const handleResize = useCallback(() => {
+    setLayoutConfig(getResponsiveLayoutConfig());
+  }, []);
+  
+  // 监听窗口大小变化
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [handleResize]);
 
-  const currentArtwork = artworks[currentIndex];
+
 
   // 自动播放功能
   useEffect(() => {
@@ -31,17 +77,17 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
     return () => clearInterval(interval);
   }, [isAutoPlay, artworks.length]);
 
-  const goToPrevious = () => {
+  const goToPrevious = useCallback(() => {
     setCurrentIndex((prev) => (prev - 1 + artworks.length) % artworks.length);
-  };
+  }, [artworks.length]);
 
-  const goToNext = () => {
+  const goToNext = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % artworks.length);
-  };
+  }, [artworks.length]);
 
-  const goToIndex = (index: number) => {
+  const goToIndex = useCallback((index: number) => {
     setCurrentIndex(index);
-  };
+  }, []);
 
   // 获取侧边显示的作品索引
   const getSideArtworks = () => {
@@ -59,6 +105,55 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
   };
 
   const sideArtworks = getSideArtworks();
+
+  // 使用useMemo缓存主作品的动态样式计算
+  const mainImageStyles = useMemo(() => {
+    const mainImageDimensions = currentImageDimensions.dimensions;
+    if (!mainImageDimensions) return {};
+    
+    return generateDynamicStyles(
+      calculateOptimalSize(
+        mainImageDimensions.aspectRatio,
+        layoutConfig.central.main
+      )
+    );
+  }, [currentImageDimensions.dimensions, layoutConfig.central.main]);
+
+  // 使用useMemo缓存侧边作品的动态样式计算
+  const sideImageStyles = useMemo(() => {
+    return sideArtworks.map(({ index }) => {
+      const artwork = artworks[index];
+      const dimensions = imageDimensions.dimensionsMap[artwork.image];
+      if (!dimensions) return {};
+      
+      return generateDynamicStyles(
+        calculateOptimalSize(
+          dimensions.aspectRatio,
+          layoutConfig.central.side
+        )
+      );
+    });
+  }, [sideArtworks, artworks, imageDimensions.dimensionsMap, layoutConfig.central.side]);
+
+  // 使用useMemo缓存底部缩略图的动态样式计算
+  const thumbnailStyles = useMemo(() => {
+    return artworks.map((artwork) => {
+      const dimensions = imageDimensions.dimensionsMap[artwork.image];
+      if (!dimensions) return {};
+      
+      return generateDynamicStyles(
+        calculateOptimalSize(
+          dimensions.aspectRatio,
+          {
+            maxWidth: 80,
+            maxHeight: 80,
+            minWidth: 60,
+            minHeight: 60
+          }
+        )
+      );
+    });
+  }, [artworks, imageDimensions.dimensionsMap]);
 
   return (
     <div className="min-h-screen bg-white dark:bg-black text-gray-800 dark:text-white pt-20 sm:pt-24 md:pt-32 mobile-nav-padding">
@@ -96,9 +191,18 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
               const artwork = artworks[index];
               const isLeft = position === 'left';
               const translateX = isLeft ? -200 - (offset * 120) : 200 + (offset * 120);
-              const scale = 1 - (offset * 0.15);
-              const opacity = 1 - (offset * 0.3);
-              const zIndex = 10 - offset;
+              const artworkDimensions = imageDimensions.dimensionsMap[artwork.image];
+               const sideLayout = artworkDimensions?.aspectRatio ? 
+                 calculateSideImageLayout(
+                   currentImageDimensions.dimensions?.aspectRatio || 1,
+                   artworkDimensions.aspectRatio,
+                   offset,
+                   position as 'left' | 'right'
+                 ) : null;
+               
+               const scale = 1 - (offset * 0.15);
+               const opacity = sideLayout ? sideLayout.opacity : 1 - (offset * 0.3);
+               const zIndex = sideLayout ? sideLayout.zIndex : 10 - offset;
 
               return (
                 <motion.div
@@ -112,7 +216,13 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
                   onClick={() => goToIndex(index)}
                   transition={{ duration: 0.3 }}
                 >
-                  <div className="w-48 h-64 rounded-lg overflow-hidden shadow-2xl transform group-hover:scale-105 transition-transform duration-300">
+                  <div 
+                    className="rounded-lg overflow-hidden shadow-2xl transform group-hover:scale-105 transition-transform duration-300"
+                    style={Object.keys(sideImageStyles[sideArtworks.findIndex(item => item.index === index && item.position === position && item.offset === offset)] || {}).length > 0 ? 
+                      sideImageStyles[sideArtworks.findIndex(item => item.index === index && item.position === position && item.offset === offset)] : 
+                      { width: '192px', height: '256px' } // 默认尺寸
+                    }
+                  >
                     <OptimizedImage
                       src={artwork.image}
                       alt={artwork.title}
@@ -136,7 +246,13 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
             className="relative z-20 cursor-pointer group"
             onClick={() => onArtworkClick(currentArtwork)}
           >
-            <div className="w-80 h-80 sm:w-80 sm:h-96 md:w-96 md:h-[480px] lg:w-[420px] lg:h-[520px] rounded-xl overflow-hidden shadow-2xl">
+            <div 
+              className="rounded-xl overflow-hidden shadow-2xl transition-all duration-300 ease-in-out"
+              style={Object.keys(mainImageStyles).length > 0 ? 
+                 mainImageStyles : 
+                 { width: '320px', height: '320px' } // 默认尺寸
+               }
+            >
               <OptimizedImage
                 src={currentArtwork.image}
                 alt={currentArtwork.title}
@@ -234,8 +350,8 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
             className={clsx(
               'flex items-center space-x-2 px-4 py-2 rounded-full transition-colors',
               isAutoPlay
-                ? 'bg-white/20 text-white'
-                : 'bg-white/10 text-gray-400 hover:text-white'
+                ? 'bg-white/20 dark:bg-gray-800/60 text-white dark:text-gray-200'
+                : 'bg-white/10 dark:bg-gray-800/30 text-gray-400 dark:text-gray-500 hover:text-white dark:hover:text-gray-200'
             )}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -249,7 +365,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
             >
               {isAutoPlay ? <Pause size={16} /> : <Play size={16} />}
             </motion.div>
-            <span className="text-sm">{isAutoPlay ? '暂停' : '播放'}</span>
+            <span className="text-sm text-current">{isAutoPlay ? '暂停' : '播放'}</span>
           </motion.button>
 
           {/* 进度指示器 */}
@@ -278,29 +394,41 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
         <div className="mt-12 pb-8">
           <div className="flex justify-center">
             <div className="flex space-x-4 overflow-x-auto pb-4 max-w-full tablet-thumbnails lg:flex-row lg:space-x-4 lg:space-y-0 md:flex-row md:space-x-4 md:overflow-x-auto md:overflow-y-hidden">
-              {artworks.map((artwork, index) => (
-                <motion.button
-                  key={artwork.id}
-                  onClick={() => goToIndex(index)}
-                  className={clsx(
-                    'flex-shrink-0 w-20 h-24 rounded-lg overflow-hidden transition-all duration-300 mobile-button',
-                    index === currentIndex
-                      ? 'ring-2 ring-white scale-110'
-                      : 'opacity-60 hover:opacity-100'
-                  )}
-                  whileHover={{ scale: index === currentIndex ? 1.1 : 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                >
-                  <OptimizedImage
-                    src={artwork.thumbnail}
-                    alt={artwork.title}
-                    width={80}
-                    height={96}
-                    sizes="80px"
-                  />
-                </motion.button>
-              ))}
+              {artworks.map((artwork, index) => {
+                const artworkDimensions = imageDimensions.dimensionsMap[artwork.image];
+                const thumbnailSize = artworkDimensions?.aspectRatio ? 
+                  calculateOptimalSize(
+                    artworkDimensions.aspectRatio, 
+                    layoutConfig.central.thumbnail
+                  ) : null;
+                
+                return (
+                  <motion.button
+                    key={artwork.id}
+                    onClick={() => goToIndex(index)}
+                    className={clsx(
+                      'flex-shrink-0 rounded-lg overflow-hidden transition-all duration-300 mobile-button',
+                      index === currentIndex
+                        ? 'ring-2 ring-white scale-110'
+                        : 'opacity-60 hover:opacity-100'
+                    )}
+                    style={Object.keys(thumbnailStyles[index] || {}).length > 0 ? 
+                      thumbnailStyles[index] : 
+                      { width: '80px', height: '96px' } // 默认尺寸
+                    }
+                    whileHover={{ scale: index === currentIndex ? 1.1 : 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
+                    <OptimizedImage
+                      src={artwork.thumbnail}
+                      alt={artwork.title}
+                      fill
+                      sizes="80px"
+                    />
+                  </motion.button>
+                );
+              })}
             </div>
           </div>
         </div>
