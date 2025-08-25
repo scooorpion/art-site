@@ -46,7 +46,7 @@ export default function OptimizedImage({
   return (
     <div
       className={clsx(
-        'relative overflow-hidden bg-gray-100',
+        'relative overflow-hidden',
         fill && 'w-full h-full',
         onClick && 'cursor-pointer',
         className

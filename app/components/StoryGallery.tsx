@@ -214,7 +214,7 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
                       fill
                       sizes="50vw"
                       priority
-                      className="object-contain"
+                      objectFit="contain"
                     />
                   </div>
                 </div>
@@ -279,7 +279,7 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
                     fill
                     sizes="100vw"
                     priority
-                    className="object-contain"
+                    objectFit="contain"
                   />
                 </div>
                 
