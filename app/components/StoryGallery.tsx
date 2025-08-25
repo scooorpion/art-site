@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, X, Maximize, Minimize, Info, BookOpen, Eye, Heart, Share2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, Maximize, Minimize, Info, BookOpen, Eye, Heart, Share2, ChevronsDown, ChevronsUp } from 'lucide-react';
 import OptimizedImage, { imageSizes, aspectRatios } from './OptimizedImage';
 import { Artwork } from '../data/artworks';
 import { clsx } from 'clsx';
@@ -19,6 +19,7 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [readingMode, setReadingMode] = useState(false);
+  const [showThumbnails, setShowThumbnails] = useState(false);
   const [direction, setDirection] = useState(0);
   
   // 使用useMemo缓存当前作品
@@ -96,7 +97,7 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
 
   return (
     <div className={clsx(
-      'fixed inset-0 z-50 bg-black',
+      'fixed inset-0 z-50 bg-black flex flex-col',
       isFullscreen ? 'cursor-none' : 'cursor-default'
     )}>
       {/* 顶部控制栏 */}
@@ -106,7 +107,7 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/80 to-transparent p-4 sm:p-6"
+            className="absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-black/80 to-transparent p-4 sm:p-6"
           >
             <div className="flex items-center justify-between text-white">
               <div className="flex items-center space-x-4">
@@ -130,6 +131,14 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
               </div>
               
               <div className="flex items-center space-x-4">
+                <motion.button
+                  onClick={() => setShowThumbnails(!showThumbnails)}
+                  className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {showThumbnails ? <ChevronsDown size={20} /> : <ChevronsUp size={20} />}
+                </motion.button>
                 <motion.button
                   onClick={() => setReadingMode(!readingMode)}
                   className={clsx(
@@ -165,7 +174,7 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
       </AnimatePresence>
 
       {/* 主内容区域 */}
-      <div className="relative w-full h-full overflow-hidden">
+      <div className="flex-grow relative w-full overflow-hidden">
         <AnimatePresence mode="sync" custom={direction}>
           <motion.div
             key={currentIndex}
@@ -193,9 +202,9 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
           >
             {readingMode ? (
               // 阅读模式布局
-              <div className="w-full h-full flex">
+              <div className="w-full h-full flex flex-col md:flex-row">
                 {/* 左侧图片 */}
-                <div className="w-1/2 h-full relative p-8">
+                <div className="w-full md:w-1/2 h-1/2 md:h-full relative p-4 md:p-8">
                   <div 
                     className="w-full h-full relative flex items-center justify-center"
                   >
@@ -211,30 +220,30 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
                 </div>
                 
                 {/* 右侧文字 */}
-                <div className="w-1/2 h-full overflow-y-auto p-12 text-white">
+                <div className="w-full md:w-1/2 h-1/2 md:h-full overflow-y-auto p-6 md:p-12 text-white">
                   <div className="max-w-2xl">
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 }}
                     >
-                      <h1 className="text-4xl font-serif font-bold mb-4">
+                      <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold mb-2 md:mb-4">
                         {currentArtwork.title}
                       </h1>
-                      <div className="text-xl text-gray-300 mb-8">
+                      <div className="text-lg sm:text-xl text-gray-300 mb-4 md:mb-8">
                         <p>{currentArtwork.artist}</p>
-                        <p className="text-lg">{currentArtwork.year} · {currentArtwork.medium}</p>
-                        <p className="text-base text-gray-400">{currentArtwork.dimensions}</p>
+                        <p className="text-base sm:text-lg">{currentArtwork.year} · {currentArtwork.medium}</p>
+                        <p className="text-sm sm:text-base text-gray-400">{currentArtwork.dimensions}</p>
                       </div>
                       
-                      <div className="prose prose-invert prose-lg max-w-none">
-                        <h3 className="text-2xl font-serif mb-4">作品描述</h3>
-                        <p className="text-gray-200 leading-relaxed mb-8">
+                      <div className="prose prose-invert prose-base sm:prose-lg max-w-none">
+                        <h3 className="text-xl sm:text-2xl font-serif mb-2 md:mb-4">作品描述</h3>
+                        <p className="text-gray-300 sm:text-gray-200 leading-relaxed mb-4 md:mb-8">
                           {currentArtwork.description}
                         </p>
                         
-                        <h3 className="text-2xl font-serif mb-4">创作故事</h3>
-                        <p className="text-gray-200 leading-relaxed">
+                        <h3 className="text-xl sm:text-2xl font-serif mb-2 md:mb-4">创作故事</h3>
+                        <p className="text-gray-300 sm:text-gray-200 leading-relaxed">
                           {currentArtwork.story}
                         </p>
                       </div>
@@ -276,21 +285,21 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
                 
                 {/* 底部信息面板 */}
                 <AnimatePresence>
-                  {!isFullscreen && (
+                  {!isFullscreen && !showThumbnails && (
                     <motion.div
                       initial={{ opacity: 0, y: 100 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 100 }}
-                      className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent p-8"
+                      className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent p-4 sm:p-8"
                     >
                       <div className="max-w-4xl mx-auto text-white">
-                        <h2 className="text-3xl font-serif font-bold mb-2">
+                        <h2 className="text-2xl sm:text-3xl font-serif font-bold mb-1 sm:mb-2">
                           {currentArtwork.title}
                         </h2>
-                        <p className="text-xl text-gray-300 mb-4">
+                        <p className="text-lg sm:text-xl text-gray-300 mb-2 sm:mb-4">
                           {currentArtwork.artist} · {currentArtwork.year}
                         </p>
-                        <p className="text-gray-200 leading-relaxed max-w-3xl">
+                        <p className="text-gray-300 sm:text-gray-200 leading-relaxed max-w-3xl">
                           {currentArtwork.description}
                         </p>
                       </div>
@@ -301,83 +310,104 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
             )}
           </motion.div>
         </AnimatePresence>
-      </div>
+        
+        {/* 导航按钮 */}
+        <AnimatePresence>
+          {!isFullscreen && (
+            <>
+              <motion.button
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                onClick={goToPrevious}
+                disabled={currentIndex === 0}
+                className={clsx(
+                  "absolute left-6 top-1/2 transform -translate-y-1/2 z-10 p-3 rounded-full transition-colors text-white",
+                  currentIndex === 0
+                    ? "bg-black/20 cursor-not-allowed opacity-50"
+                    : "bg-black/50 hover:bg-black/70"
+                )}
+                whileHover={currentIndex > 0 ? { scale: 1.1, x: -2 } : {}}
+                whileTap={currentIndex > 0 ? { scale: 0.95 } : {}}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              >
+                <ChevronLeft size={24} />
+              </motion.button>
+              
+              <motion.button
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                onClick={goToNext}
+                disabled={currentIndex === artworks.length - 1}
+                className={clsx(
+                  "absolute right-6 top-1/2 transform -translate-y-1/2 z-10 p-3 rounded-full transition-colors text-white",
+                  currentIndex === artworks.length - 1
+                    ? "bg-black/20 cursor-not-allowed opacity-50"
+                    : "bg-black/50 hover:bg-black/70"
+                )}
+                whileHover={currentIndex < artworks.length - 1 ? { scale: 1.1, x: 2 } : {}}
+                whileTap={currentIndex < artworks.length - 1 ? { scale: 0.95 } : {}}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              >
+                <ChevronRight size={24} />
+              </motion.button>
+            </>
+          )}
+        </AnimatePresence>
 
-      {/* 导航按钮 */}
-      <AnimatePresence>
-        {!isFullscreen && (
-          <>
-            <motion.button
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              onClick={goToPrevious}
-              disabled={currentIndex === 0}
-              className={clsx(
-                "absolute left-6 top-1/2 transform -translate-y-1/2 z-10 p-3 rounded-full transition-colors text-white",
-                currentIndex === 0
-                  ? "bg-black/20 cursor-not-allowed opacity-50"
-                  : "bg-black/50 hover:bg-black/70"
-              )}
-              whileHover={currentIndex > 0 ? { scale: 1.1, x: -2 } : {}}
-              whileTap={currentIndex > 0 ? { scale: 0.95 } : {}}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+        {/* 全屏提示 */}
+        <AnimatePresence>
+          {isFullscreen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute top-6 left-1/2 transform -translate-x-1/2 z-10 bg-black/50 text-white px-4 py-2 rounded-full text-sm"
             >
-              <ChevronLeft size={24} />
-            </motion.button>
-            
-            <motion.button
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              onClick={goToNext}
-              disabled={currentIndex === artworks.length - 1}
-              className={clsx(
-                "absolute right-6 top-1/2 transform -translate-y-1/2 z-10 p-3 rounded-full transition-colors text-white",
-                currentIndex === artworks.length - 1
-                  ? "bg-black/20 cursor-not-allowed opacity-50"
-                  : "bg-black/50 hover:bg-black/70"
-              )}
-              whileHover={currentIndex < artworks.length - 1 ? { scale: 1.1, x: 2 } : {}}
-              whileTap={currentIndex < artworks.length - 1 ? { scale: 0.95 } : {}}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
-            >
-              <ChevronRight size={24} />
-            </motion.button>
-          </>
-        )}
-      </AnimatePresence>
+              按 ESC 退出全屏 · 按 F 切换全屏 · 左右箭头导航
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* 点击区域用于全屏切换 */}
+        <div
+          className="absolute inset-0 z-0"
+          onClick={() => setIsFullscreen(!isFullscreen)}
+        />
+      </div>
 
       {/* 底部预览 */}
       <AnimatePresence>
-        {!isFullscreen && (
+        {showThumbnails && !isFullscreen && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10"
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "tween", ease: [0.22, 1, 0.36, 1], duration: 0.5 }}
+            className="absolute bottom-0 left-0 right-0 z-20"
           >
-            <div className="bg-black/80 backdrop-blur-sm rounded-lg p-4">
-              <div className="flex space-x-4 overflow-x-auto">
+            <div className="bg-black/80 backdrop-blur-md p-4">
+              <div className="flex justify-center space-x-4 overflow-x-auto pb-4">
                 {artworks.map((artwork, index) => {
-                  // 使用固定缩略图尺寸
                   const thumbnailSize = { width: 80, height: 96 };
                   
                   return (
                     <motion.div
                       key={artwork.id}
                       className={clsx(
-                        "flex-shrink-0 relative cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-300",
+                        "flex-shrink-0 relative cursor-pointer rounded-lg overflow-hidden transition-all duration-300",
+                        "bg-gray-900", // 背景色，以防图片未加载
                         index === currentIndex
-                          ? "border-white shadow-lg scale-110"
-                          : "border-transparent hover:border-white/50"
+                          ? "border-2 border-white shadow-lg"
+                          : "border-2 border-transparent hover:border-white/50"
                       )}
                       style={{
                         width: `${thumbnailSize.width}px`,
                         height: `${thumbnailSize.height}px`
                       }}
                       onClick={() => goToSlide(index)}
-                      whileHover={{ scale: index === currentIndex ? 1.1 : 1.05 }}
+                      whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
                       <OptimizedImage
@@ -385,7 +415,7 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
                         alt={artwork.title}
                         fill
                         sizes="80px"
-                        className="object-cover"
+                        className="object-cover w-full h-full" // 改为 object-cover
                       />
                       {index === currentIndex && (
                         <div className="absolute inset-0 bg-white/20" />
@@ -394,7 +424,7 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
                   );
                 })}
               </div>
-              <div className="flex items-center justify-center mt-3">
+              <div className="flex items-center justify-center">
                 <span className="text-white text-sm">
                   {currentIndex + 1} / {artworks.length}
                 </span>
@@ -403,26 +433,6 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* 全屏提示 */}
-      <AnimatePresence>
-        {isFullscreen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute top-6 left-1/2 transform -translate-x-1/2 z-10 bg-black/50 text-white px-4 py-2 rounded-full text-sm"
-          >
-            按 ESC 退出全屏 · 按 F 切换全屏 · 左右箭头导航
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* 点击区域用于全屏切换 */}
-      <div
-        className="absolute inset-0 z-0"
-        onClick={() => setIsFullscreen(!isFullscreen)}
-      />
     </div>
   );
 }
