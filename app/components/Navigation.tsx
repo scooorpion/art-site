@@ -140,35 +140,27 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
             
             {/* 搜索按钮 - 仅在grid视图显示 */}
             {currentView === 'grid' && onToggleSearchFilter && (
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-                className="relative ml-2"
-              >
+              <div className="relative ml-2 flex-shrink-0" style={{ minWidth: '90px' }}>
                 <motion.button
                   onClick={onToggleSearchFilter}
                   className={clsx(
-                    'relative flex items-center space-x-1 lg:space-x-2 px-3 lg:px-4 py-2 rounded-full transition-all duration-300 group',
+                    'relative flex items-center justify-center space-x-1 lg:space-x-2 px-3 lg:px-4 py-2 rounded-full transition-colors duration-300 group w-full',
                     showSearchFilter
                       ? 'text-white'
                       : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                   )}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  
                 >
                   <AnimatePresence>
                     {showSearchFilter && (
                       <motion.div
                         className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full overflow-hidden"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                         transition={{
-                          type: 'spring',
-                          stiffness: 400,
-                          damping: 25,
-                          duration: 0.3
+                          duration: 0.3,
+                          ease: [0.4, 0, 0.2, 1]
                         }}
                         style={{ borderRadius: '9999px' }}
                       />
@@ -183,7 +175,7 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                     />
                   )}
                 </motion.button>
-              </motion.div>
+              </div>
             )}
           </div>
         </div>
