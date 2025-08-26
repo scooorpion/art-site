@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Grid3X3, Focus, BookOpen, Palette, Search } from 'lucide-react';
+import { Menu, X, Grid3X3, Focus, Palette, Search } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useRouter } from 'next/navigation';
 import AnimatedText, { GradientText } from './AnimatedText';
 
-type ViewMode = 'grid' | 'central' | 'story';
+type ViewMode = 'grid' | 'central';
 
 interface NavigationProps {
   currentView: ViewMode;
@@ -33,9 +33,6 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
         case 'central':
           router.push('/gallery/central');
           break;
-        case 'story':
-          router.push('/gallery/story');
-          break;
       }
     } catch (error) {
       console.error('Navigation error:', error);
@@ -54,12 +51,6 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
       label: '中央展厅',
       icon: Focus,
       description: '聚焦式作品展示'
-    },
-    {
-      id: 'story' as ViewMode,
-      label: '艺术故事',
-      icon: BookOpen,
-      description: '沉浸式故事体验'
     }
   ];
 

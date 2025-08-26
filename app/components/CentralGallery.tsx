@@ -24,6 +24,12 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+  
+  // 检测客户端水合状态
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
   
   // 使用useMemo缓存图片URL数组，避免每次渲染都重新计算
   const imageUrls = useMemo(() => artworks.map(artwork => artwork.image), [artworks]);
@@ -108,8 +114,15 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
 
   // 使用useMemo缓存主作品的动态样式计算
   const mainImageStyles = useMemo(() => {
+    // 在水合完成前使用固定样式，避免服务端客户端不匹配
+    if (!isHydrated) {
+      return { width: '480px', height: '480px', minWidth: '480px', minHeight: '480px' };
+    }
+    
     const mainImageDimensions = currentImageDimensions.dimensions;
-    if (!mainImageDimensions) return {};
+    if (!mainImageDimensions) {
+      return { width: '480px', height: '480px', minWidth: '480px', minHeight: '480px' };
+    }
     
     return generateDynamicStyles(
       calculateOptimalSize(
@@ -117,14 +130,21 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
         layoutConfig.central.main
       )
     );
-  }, [currentImageDimensions.dimensions, layoutConfig.central.main]);
+  }, [isHydrated, currentImageDimensions.dimensions, layoutConfig.central.main]);
 
   // 使用useMemo缓存侧边作品的动态样式计算
   const sideImageStyles = useMemo(() => {
     return sideArtworks.map(({ index }) => {
+      // 在水合完成前使用固定样式
+      if (!isHydrated) {
+        return { width: '192px', height: '256px' };
+      }
+      
       const artwork = artworks[index];
       const dimensions = imageDimensions.dimensionsMap[artwork.image];
-      if (!dimensions) return {};
+      if (!dimensions) {
+        return { width: '192px', height: '256px' };
+      }
       
       return generateDynamicStyles(
         calculateOptimalSize(
@@ -133,13 +153,20 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
         )
       );
     });
-  }, [sideArtworks, artworks, imageDimensions.dimensionsMap, layoutConfig.central.side]);
+  }, [isHydrated, sideArtworks, artworks, imageDimensions.dimensionsMap, layoutConfig.central.side]);
 
   // 使用useMemo缓存底部缩略图的动态样式计算
   const thumbnailStyles = useMemo(() => {
     return artworks.map((artwork) => {
+      // 在水合完成前使用固定样式
+      if (!isHydrated) {
+        return { width: '80px', height: '96px' };
+      }
+      
       const dimensions = imageDimensions.dimensionsMap[artwork.image];
-      if (!dimensions) return {};
+      if (!dimensions) {
+        return { width: '80px', height: '96px' };
+      }
       
       return generateDynamicStyles(
         calculateOptimalSize(
@@ -153,7 +180,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
         )
       );
     });
-  }, [artworks, imageDimensions.dimensionsMap]);
+  }, [isHydrated, artworks, imageDimensions.dimensionsMap]);
 
   return (
     <div className="min-h-screen bg-white dark:bg-black text-gray-800 dark:text-white pt-20 sm:pt-24 md:pt-32 mobile-nav-padding">
@@ -250,7 +277,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
               className="overflow-hidden shadow-2xl transition-all duration-300 ease-in-out"
               style={Object.keys(mainImageStyles).length > 0 ? 
                  mainImageStyles : 
-                 { width: '320px', height: '320px' } // 默认尺寸
+                 { width: '480px', height: '480px', minWidth: '480px', minHeight: '480px' } // 默认尺寸与水合前保持一致
                }
             >
               <OptimizedImage
@@ -271,7 +298,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
                   e.stopPropagation();
                   setShowInfo(!showInfo);
                 }}
-                className="absolute top-4 right-4 p-2 bg-black/50 rounded-full hover:bg-black/70 transition-colors"
+                className="absolute top-4 right-4 p-2 bg-black/50 dark:bg-white/20 text-white dark:text-gray-200 rounded-full hover:bg-black/70 dark:hover:bg-white/40 transition-colors"
                 whileHover={{ scale: 1.1, rotate: 15 }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -289,7 +316,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
           {/* 导航按钮 */}
           <motion.button
             onClick={goToPrevious}
-            className="absolute left-4 z-30 p-3 bg-black/50 hover:bg-black/70 rounded-full transition-colors"
+            className="absolute left-4 z-30 p-3 bg-black/50 dark:bg-white/20 text-white dark:text-gray-200 hover:bg-black/70 dark:hover:bg-white/40 rounded-full transition-colors"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -298,7 +325,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
           </motion.button>
           <motion.button
             onClick={goToNext}
-            className="absolute right-4 z-30 p-3 bg-black/50 hover:bg-black/70 rounded-full transition-colors"
+            className="absolute right-4 z-30 p-3 bg-black/50 dark:bg-white/20 text-white dark:text-gray-200 hover:bg-black/70 dark:hover:bg-white/40 rounded-full transition-colors"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -314,7 +341,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
-              className="mt-8 bg-white/10 backdrop-blur-md rounded-xl p-6"
+              className="mt-8 bg-white/10 dark:bg-gray-800/40 backdrop-blur-md rounded-xl p-6"
             >
               <div className="text-center">
                 <h2 className="text-2xl font-serif font-bold mb-2">{currentArtwork.title}</h2>
@@ -331,7 +358,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
                   {currentArtwork.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="px-3 py-1 bg-white/20 text-white text-sm rounded-full"
+                      className="px-3 py-1 bg-white/20 dark:bg-gray-800/60 text-white dark:text-gray-200 text-sm rounded-full"
                     >
                       {tag}
                     </span>
@@ -377,8 +404,8 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
                 className={clsx(
                   'w-2 h-2 rounded-full transition-all duration-300',
                   index === currentIndex
-                    ? 'bg-white w-8'
-                    : 'bg-white/40 hover:bg-white/60'
+                    ? 'bg-white dark:bg-gray-200 w-8'
+                    : 'bg-white/40 dark:bg-gray-500 hover:bg-white/60 dark:hover:bg-gray-400'
                 )}
               />
             ))}
@@ -402,7 +429,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
                     key={artwork.id}
                     className={clsx(
                       "flex-shrink-0 relative cursor-pointer overflow-hidden transition-all duration-300 rounded-lg",
-                      "bg-gray-900", // 背景色，以防图片未加载
+                      "bg-gray-100 dark:bg-gray-900", // 背景色，以防图片未加载
                       index === currentIndex
                         ? "border-2 border-white shadow-lg"
                         : "border-2 border-transparent hover:border-white/50"
@@ -423,7 +450,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
                       className="object-cover w-full h-full"
                     />
                     {index === currentIndex && (
-                      <div className="absolute inset-0 bg-white/20" />
+                      <div className="absolute inset-0 bg-white/20 dark:bg-gray-800/40" />
                     )}
                   </motion.div>
                 );

@@ -399,8 +399,8 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
                         "flex-shrink-0 relative cursor-pointer rounded-lg overflow-hidden transition-all duration-300",
                         "bg-gray-900", // 背景色，以防图片未加载
                         index === currentIndex
-                          ? "border-2 border-white shadow-lg"
-                          : "border-2 border-transparent hover:border-white/50"
+                          ? "shadow-lg"
+                          : ""
                       )}
                       style={{
                         width: `${thumbnailSize.width}px`,
@@ -415,7 +415,7 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
                         alt={artwork.title}
                         fill
                         sizes="80px"
-                        className="object-cover w-full h-full" // 改为 object-cover
+                        className="object-cover w-full h-full border-0" // 明确移除边框
                       />
                       {index === currentIndex && (
                         <div className="absolute inset-0 bg-white/20" />
