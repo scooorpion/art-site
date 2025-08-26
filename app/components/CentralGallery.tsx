@@ -217,7 +217,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
                   transition={{ duration: 0.3 }}
                 >
                   <div 
-                    className="rounded-lg overflow-hidden shadow-2xl transform group-hover:scale-105 transition-transform duration-300"
+                    className="overflow-hidden shadow-2xl transform group-hover:scale-105 transition-transform duration-300"
                     style={Object.keys(sideImageStyles[sideArtworks.findIndex(item => item.index === index && item.position === position && item.offset === offset)] || {}).length > 0 ? 
                       sideImageStyles[sideArtworks.findIndex(item => item.index === index && item.position === position && item.offset === offset)] : 
                       { width: '192px', height: '256px' } // 默认尺寸
@@ -247,7 +247,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
             onClick={() => onArtworkClick(currentArtwork)}
           >
             <div 
-              className="rounded-xl overflow-hidden shadow-2xl transition-all duration-300 ease-in-out"
+              className="overflow-hidden shadow-2xl transition-all duration-300 ease-in-out"
               style={Object.keys(mainImageStyles).length > 0 ? 
                  mainImageStyles : 
                  { width: '320px', height: '320px' } // 默认尺寸
@@ -393,40 +393,39 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
         {/* 底部缩略图列表 */}
         <div className="mt-12 pb-8">
           <div className="flex justify-center">
-            <div className="flex space-x-4 overflow-x-auto pb-4 max-w-full tablet-thumbnails lg:flex-row lg:space-x-4 lg:space-y-0 md:flex-row md:space-x-4 md:overflow-x-auto md:overflow-y-hidden">
+            <div className="flex space-x-4 overflow-x-auto pb-4 max-w-full">
               {artworks.map((artwork, index) => {
-                const artworkDimensions = imageDimensions.dimensionsMap[artwork.image];
-                const thumbnailSize = artworkDimensions?.aspectRatio ? 
-                  calculateOptimalSize(
-                    artworkDimensions.aspectRatio, 
-                    layoutConfig.central.thumbnail
-                  ) : null;
+                const thumbnailSize = { width: 80, height: 96 };
                 
                 return (
-                  <motion.button
+                  <motion.div
                     key={artwork.id}
-                    onClick={() => goToIndex(index)}
                     className={clsx(
-                      'flex-shrink-0 rounded-lg overflow-hidden transition-all duration-300 mobile-button',
+                      "flex-shrink-0 relative cursor-pointer overflow-hidden transition-all duration-300 rounded-lg",
+                      "bg-gray-900", // 背景色，以防图片未加载
                       index === currentIndex
-                        ? 'ring-2 ring-white scale-110'
-                        : 'opacity-60 hover:opacity-100'
+                        ? "border-2 border-white shadow-lg"
+                        : "border-2 border-transparent hover:border-white/50"
                     )}
-                    style={Object.keys(thumbnailStyles[index] || {}).length > 0 ? 
-                      thumbnailStyles[index] : 
-                      { width: '80px', height: '96px' } // 默认尺寸
-                    }
-                    whileHover={{ scale: index === currentIndex ? 1.1 : 1.05, y: -2 }}
+                    style={{
+                      width: `${thumbnailSize.width}px`,
+                      height: `${thumbnailSize.height}px`
+                    }}
+                    onClick={() => goToIndex(index)}
+                    whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
                   >
                     <OptimizedImage
                       src={artwork.thumbnail}
                       alt={artwork.title}
                       fill
                       sizes="80px"
+                      className="object-cover w-full h-full"
                     />
-                  </motion.button>
+                    {index === currentIndex && (
+                      <div className="absolute inset-0 bg-white/20" />
+                    )}
+                  </motion.div>
                 );
               })}
             </div>

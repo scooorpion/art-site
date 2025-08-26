@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Grid3X3, Focus, BookOpen, Palette } from 'lucide-react';
+import { Menu, X, Grid3X3, Focus, BookOpen, Palette, Search } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useRouter } from 'next/navigation';
 import AnimatedText, { GradientText } from './AnimatedText';
@@ -11,9 +11,11 @@ type ViewMode = 'grid' | 'central' | 'story';
 
 interface NavigationProps {
   currentView: ViewMode;
+  showSearchFilter?: boolean;
+  onToggleSearchFilter?: () => void;
 }
 
-export default function Navigation({ currentView }: NavigationProps) {
+export default function Navigation({ currentView, showSearchFilter, onToggleSearchFilter }: NavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
@@ -135,6 +137,54 @@ export default function Navigation({ currentView }: NavigationProps) {
                 </motion.div>
               );
             })}
+            
+            {/* 搜索按钮 - 仅在grid视图显示 */}
+            {currentView === 'grid' && onToggleSearchFilter && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+                className="relative ml-2"
+              >
+                <motion.button
+                  onClick={onToggleSearchFilter}
+                  className={clsx(
+                    'relative flex items-center space-x-1 lg:space-x-2 px-3 lg:px-4 py-2 rounded-full transition-all duration-300 group',
+                    showSearchFilter
+                      ? 'text-white'
+                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                  )}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <AnimatePresence>
+                    {showSearchFilter && (
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full overflow-hidden"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{
+                          type: 'spring',
+                          stiffness: 400,
+                          damping: 25,
+                          duration: 0.3
+                        }}
+                        style={{ borderRadius: '9999px' }}
+                      />
+                    )}
+                  </AnimatePresence>
+                  <Search size={18} className="relative z-10 flex-shrink-0" />
+                  <span className="text-sm font-medium relative z-10 whitespace-nowrap">搜索</span>
+                  
+                  {!showSearchFilter && (
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-pink-600/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    />
+                  )}
+                </motion.button>
+              </motion.div>
+            )}
           </div>
         </div>
       </motion.nav>
@@ -166,12 +216,31 @@ export default function Navigation({ currentView }: NavigationProps) {
                 </GradientText>
               </AnimatedText>
             </div>
-            <motion.button
-              onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-full hover:bg-gray-100/50 dark:hover:bg-gray-700/50 transition-colors relative"
-              whileTap={{ scale: 0.95 }}
-              whileHover={{ scale: 1.05 }}
-            >
+            
+            <div className="flex items-center space-x-2">
+              {/* 移动端搜索按钮 - 仅在grid视图显示 */}
+              {currentView === 'grid' && onToggleSearchFilter && (
+                <motion.button
+                  onClick={onToggleSearchFilter}
+                  className={clsx(
+                    'p-2 rounded-full transition-colors relative',
+                    showSearchFilter
+                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                      : 'hover:bg-gray-100/50 dark:hover:bg-gray-700/50 text-gray-600 dark:text-gray-300'
+                  )}
+                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <Search size={20} />
+                </motion.button>
+              )}
+              
+              <motion.button
+                onClick={() => setIsOpen(!isOpen)}
+                className="p-2 rounded-full hover:bg-gray-100/50 dark:hover:bg-gray-700/50 transition-colors relative"
+                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.05 }}
+              >
               <motion.div
                 animate={{ rotate: isOpen ? 180 : 0 }}
                 transition={{ duration: 0.3 }}
@@ -179,6 +248,7 @@ export default function Navigation({ currentView }: NavigationProps) {
                 {isOpen ? <X size={24} /> : <Menu size={24} />}
               </motion.div>
             </motion.button>
+            </div>
           </div>
         </motion.div>
 

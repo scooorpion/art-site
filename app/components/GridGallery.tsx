@@ -12,9 +12,11 @@ import AnimatedText from './AnimatedText';
 interface GridGalleryProps {
   artworks: Artwork[];
   onArtworkClick: (artwork: Artwork) => void;
+  showSearchFilter?: boolean;
+  onToggleSearchFilter?: () => void;
 }
 
-export default function GridGallery({ artworks, onArtworkClick }: GridGalleryProps) {
+export default function GridGallery({ artworks, onArtworkClick, showSearchFilter = false, onToggleSearchFilter }: GridGalleryProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -58,41 +60,68 @@ export default function GridGallery({ artworks, onArtworkClick }: GridGalleryPro
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black pt-20 sm:pt-24 md:pt-32 mobile-nav-padding">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 large-container">
-        {/* 标题区域 */}
-        <div className="text-center mb-12">
-          <motion.h1
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-serif font-bold mb-4"
-          >
-            <AnimatedText
-              variant="fadeInUp"
-              className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-serif font-bold mb-4 mobile-title large-title bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent"
-            >
-              艺术画廊
-            </AnimatedText>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-lg text-gray-600 max-w-2xl mx-auto"
-          >
-            探索精美的艺术作品，感受每一幅画背后的故事与情感
-          </motion.p>
-        </div>
+
 
         {/* 搜索和筛选区域 */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mb-8"
-        >
-          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between mobile-filters">
+        <AnimatePresence>
+          {showSearchFilter && (
+            <motion.div
+              initial={{ opacity: 0, y: -20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.95 }}
+              transition={{ 
+                duration: 0.4, 
+                ease: [0.4, 0, 0.2, 1],
+                scale: { duration: 0.3 }
+              }}
+              className="mb-8"
+            >
+          <div className="space-y-4 sm:space-y-0 mobile-filters">
+            {/* 移动端：搜索框和筛选按钮在同一行 */}
+            <div className="flex gap-3 items-center sm:hidden">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                <input
+                  type="text"
+                  placeholder="搜索作品..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2.5 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 caret-black dark:caret-white rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-300 text-sm"
+                />
+                {searchTerm && (
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0 }}
+                    onClick={() => setSearchTerm('')}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <X size={16} />
+                  </motion.button>
+                )}
+              </div>
+              <motion.button
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                className={clsx(
+                  "flex items-center justify-center p-2.5 border border-gray-200 dark:border-gray-700 rounded-full transition-all duration-300",
+                  isFilterOpen 
+                    ? "bg-purple-600 text-white border-purple-600" 
+                    : "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
+                )}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Filter size={18} />
+              </motion.button>
+            </div>
+            
+            {/* 桌面端：原有布局 */}
+            <div className="hidden sm:flex sm:items-center sm:justify-between sm:gap-4">
             {/* 搜索框 */}
             <motion.div
-              className="relative flex-1 max-w-md"
+              className="relative flex-1 w-full sm:max-w-md"
               whileHover={{ scale: 1.02 }}
               whileFocus={{ scale: 1.02 }}
             >
@@ -122,13 +151,23 @@ export default function GridGallery({ artworks, onArtworkClick }: GridGalleryPro
             {/* 筛选按钮 */}
             <motion.button
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="flex items-center space-x-2 px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 hover:shadow-md"
+              className="flex items-center justify-center space-x-2 px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 hover:shadow-md w-full sm:w-auto"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               <Filter size={20} />
               <span>筛选</span>
+              <motion.div
+                animate={{ rotate: isFilterOpen ? 180 : 0 }}
+                transition={{ duration: 0.2 }}
+                className="ml-1"
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="text-gray-500">
+                  <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </motion.div>
             </motion.button>
+            </div>
           </div>
 
           {/* 筛选选项 */}
@@ -169,7 +208,9 @@ export default function GridGallery({ artworks, onArtworkClick }: GridGalleryPro
               </motion.div>
             )}
           </AnimatePresence>
-        </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* 结果统计 */}
         <div className="mb-6">
