@@ -142,29 +142,21 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                   )}
                   
                 >
-                  <AnimatePresence>
-                    {showSearchFilter && (
-                      <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full overflow-hidden"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{
-                          duration: 0.3,
-                          ease: [0.4, 0, 0.2, 1]
-                        }}
-                        style={{ borderRadius: '9999px' }}
-                      />
-                    )}
-                  </AnimatePresence>
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full overflow-hidden"
+                    style={{ borderRadius: '9999px' }}
+                    variants={{
+                      inactive: { opacity: 0 },
+                      hover: { opacity: 0.1 },
+                      active: { opacity: 1 }
+                    }}
+                    initial="inactive"
+                    animate={showSearchFilter ? "active" : "inactive"}
+                    whileHover={!showSearchFilter ? "hover" : "active"}
+                    transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                  />
                   <Search size={18} className="relative z-10 flex-shrink-0" />
                   <span className="text-sm font-medium relative z-10 whitespace-nowrap">搜索</span>
-                  
-                  {!showSearchFilter && (
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-pink-600/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    />
-                  )}
                 </motion.button>
               </div>
             )}

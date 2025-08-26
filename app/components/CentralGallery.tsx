@@ -187,27 +187,6 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 large-container">
         {/* 标题区域 */}
         <div className="text-center mb-12">
-          <motion.h1
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-serif font-bold mb-4"
-          >
-            <AnimatedText
-              variant="fadeInUp"
-              delay={0.2}
-              className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-serif font-bold mb-4 mobile-title large-title bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent"
-            >
-              中央展厅
-            </AnimatedText>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto"
-          >
-            沉浸式艺术体验，每一幅作品都值得细细品味
-          </motion.p>
         </div>
 
         {/* 主展示区域 */}
