@@ -95,6 +95,21 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
     setCurrentIndex(index);
   }, []);
 
+  // 键盘导航
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') goToPrevious();
+      if (e.key === 'ArrowRight') goToNext();
+      if (e.key === ' ') {
+        e.preventDefault();
+        setIsAutoPlay(!isAutoPlay);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [goToPrevious, goToNext, isAutoPlay]);
+
   // 获取侧边显示的作品索引
   const getSideArtworks = () => {
     const sideCount = 3;
@@ -183,14 +198,10 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
   }, [isHydrated, artworks, imageDimensions.dimensionsMap]);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black text-gray-800 dark:text-white pt-20 sm:pt-24 md:pt-32 mobile-nav-padding">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 large-container">
-        {/* 标题区域 */}
-        <div className="text-center mb-12">
-        </div>
-
-        {/* 主展示区域 */}
-        <div className="relative h-[70vh] flex items-center justify-center">
+    <div className="min-h-screen bg-white dark:bg-black text-gray-800 dark:text-white">
+        <div className="relative h-screen flex flex-col">
+        {/* 主展示区域 - 全屏显示 */}
+        <div className="flex-1 relative flex items-center justify-center pt-16 sm:pt-20 md:pt-24">
           {/* 平铺式图片展示 */}
           <div className="flex items-center justify-center gap-6 overflow-x-hidden px-4">
             {/* 左侧图片 */}
@@ -347,95 +358,57 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
           )}
         </AnimatePresence>
 
-        {/* 控制栏 */}
-        <div className="mt-8 flex items-center justify-center space-x-6">
-          {/* 自动播放控制 */}
-          <motion.button
-            onClick={() => setIsAutoPlay(!isAutoPlay)}
-            className={clsx(
-              'flex items-center space-x-2 px-4 py-2 rounded-full transition-colors',
-              isAutoPlay
-                ? 'bg-white/20 dark:bg-gray-800/60 text-white dark:text-gray-200'
-                : 'bg-white/10 dark:bg-gray-800/30 text-gray-400 dark:text-gray-500 hover:text-white dark:hover:text-gray-200'
-            )}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
-          >
-            <motion.div
-              key={isAutoPlay ? 'pause' : 'play'}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.2 }}
+        {/* 控制栏 - 固定在底部 */}
+        <div className="absolute bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-8 pb-4 px-4">
+          <div className="flex items-center justify-center space-x-6">
+            {/* 自动播放控制 */}
+            <motion.button
+              onClick={() => setIsAutoPlay(!isAutoPlay)}
+              className={clsx(
+                'flex items-center space-x-2 px-4 py-2 rounded-full transition-colors',
+                isAutoPlay
+                  ? 'bg-white/20 dark:bg-gray-800/60 text-white dark:text-gray-200'
+                  : 'bg-white/10 dark:bg-gray-800/30 text-gray-400 dark:text-gray-500 hover:text-white dark:hover:text-gray-200'
+              )}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              {isAutoPlay ? <Pause size={16} /> : <Play size={16} />}
-            </motion.div>
-            <span className="text-sm text-current">{isAutoPlay ? '暂停' : '播放'}</span>
-          </motion.button>
+              <motion.div
+                key={isAutoPlay ? 'pause' : 'play'}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.2 }}
+              >
+                {isAutoPlay ? <Pause size={16} /> : <Play size={16} />}
+              </motion.div>
+              <span className="text-sm text-current">{isAutoPlay ? '暂停' : '播放'}</span>
+            </motion.button>
 
-          {/* 进度指示器 */}
-          <div className="flex items-center space-x-2">
-            {artworks.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => goToIndex(index)}
-                className={clsx(
-                  'w-2 h-2 rounded-full transition-all duration-300',
-                  index === currentIndex
-                    ? 'bg-white dark:bg-gray-200 w-8'
-                    : 'bg-white/40 dark:bg-gray-500 hover:bg-white/60 dark:hover:bg-gray-400'
-                )}
-              />
-            ))}
-          </div>
+            {/* 进度指示器 */}
+            <div className="flex items-center space-x-2">
+              {artworks.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToIndex(index)}
+                  className={clsx(
+                    'w-2 h-2 rounded-full transition-all duration-300',
+                    index === currentIndex
+                      ? 'bg-white dark:bg-gray-200 w-8'
+                      : 'bg-white/40 dark:bg-gray-500 hover:bg-white/60 dark:hover:bg-gray-400'
+                  )}
+                />
+              ))}
+            </div>
 
-          {/* 计数器 */}
-          <div className="text-sm text-gray-400">
-            {currentIndex + 1} / {artworks.length}
-          </div>
-        </div>
-
-        {/* 底部缩略图列表 */}
-        <div className="mt-12 pb-8">
-          <div className="flex justify-center">
-            <div className="flex space-x-4 overflow-x-auto pb-4 max-w-full">
-              {artworks.map((artwork, index) => {
-                const thumbnailSize = { width: 80, height: 96 };
-                
-                return (
-                  <motion.div
-                    key={artwork.id}
-                    className={clsx(
-                      "flex-shrink-0 relative cursor-pointer overflow-hidden transition-all duration-300 rounded-lg",
-                      "bg-gray-100 dark:bg-gray-900", // 背景色，以防图片未加载
-                      index === currentIndex
-                        ? "border-2 border-white shadow-lg"
-                        : "border-2 border-transparent hover:border-white/50"
-                    )}
-                    style={{
-                      width: `${thumbnailSize.width}px`,
-                      height: `${thumbnailSize.height}px`
-                    }}
-                    onClick={() => goToIndex(index)}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <OptimizedImage
-                      src={artwork.thumbnail}
-                      alt={artwork.title}
-                      fill
-                      sizes="80px"
-                      className="object-cover w-full h-full"
-                    />
-                    {index === currentIndex && (
-                      <div className="absolute inset-0 bg-white/20 dark:bg-gray-800/40" />
-                    )}
-                  </motion.div>
-                );
-              })}
+            {/* 计数器 */}
+            <div className="text-sm text-gray-400">
+              {currentIndex + 1} / {artworks.length}
             </div>
           </div>
         </div>
+
+
       </div>
     </div>
   );
