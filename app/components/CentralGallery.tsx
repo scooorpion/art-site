@@ -244,9 +244,9 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
                 <OptimizedImage
                   src={currentArtwork.image}
                   alt={currentArtwork.title}
-                  width={280}
-                  height={currentImageDimensions.dimensions?.aspectRatio ? Math.round(280 / currentImageDimensions.dimensions.aspectRatio) : 280}
-                  sizes="280px"
+                  width={360}
+                  height={currentImageDimensions.dimensions?.aspectRatio ? Math.round(360 / currentImageDimensions.dimensions.aspectRatio) : 360}
+                  sizes="360px"
                   priority
                   className="group-hover:scale-105 transition-transform duration-700 object-contain"
                 />
@@ -254,24 +254,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
                 {/* 悬停遮罩 */}
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
                 
-                {/* 信息按钮 */}
-                <motion.button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowInfo(!showInfo);
-                  }}
-                  className="absolute top-4 right-4 p-2 bg-black/50 dark:bg-white/20 text-white dark:text-gray-200 rounded-full hover:bg-black/70 dark:hover:bg-white/40 transition-colors"
-                  whileHover={{ scale: 1.1, rotate: 15 }}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                >
-                  <motion.div
-                    animate={{ rotate: showInfo ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <Info size={20} />
-                  </motion.div>
-                </motion.button>
+
               </div>
             </motion.div>
             
@@ -323,40 +306,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
           </motion.button>
         </div>
 
-        {/* 作品信息 */}
-        <AnimatePresence>
-          {showInfo && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              className="mt-8 bg-white/10 dark:bg-gray-800/40 backdrop-blur-md rounded-xl p-6"
-            >
-              <div className="text-center">
-                <h2 className="text-2xl font-serif font-bold mb-2">{currentArtwork.title}</h2>
-                <p className="text-gray-300 mb-4">
-                  {currentArtwork.artist} · {currentArtwork.year} · {currentArtwork.medium}
-                </p>
-                <p className="text-gray-400 text-sm mb-4">{currentArtwork.dimensions}</p>
-                <p className="text-gray-200 max-w-2xl mx-auto leading-relaxed">
-                  {currentArtwork.description}
-                </p>
-                
-                {/* 标签 */}
-                <div className="flex flex-wrap justify-center gap-2 mt-4">
-                  {currentArtwork.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1 bg-white/20 dark:bg-gray-800/60 text-white dark:text-gray-200 text-sm rounded-full"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+
 
         {/* 控制栏 - 固定在底部 */}
         <div className="absolute bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-8 pb-4 px-4">

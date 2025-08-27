@@ -61,7 +61,7 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-        className="hidden md:flex fixed top-8 left-1/2 transform -translate-x-1/2 z-50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 rounded-full px-6 py-3 shadow-2xl"
+        className="hidden md:flex fixed top-8 left-1/2 transform -translate-x-1/2 z-50 bg-[var(--background)]/90 backdrop-blur-xl border border-[var(--border)]/50 rounded-full px-6 py-3 shadow-lg"
       >
         <div className="flex items-center space-x-4 lg:space-x-8">
           <motion.div
@@ -72,16 +72,14 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
               animate={{ rotate: 360 }}
               transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
             >
-              <Palette className="w-6 h-6 text-purple-600" />
+              <Palette className="w-6 h-6 text-[var(--accent)]" />
             </motion.div>
             <AnimatedText
               variant="fadeInLeft"
               delay={0.3}
-              className="font-serif text-xl font-bold"
+              className="font-serif text-xl font-bold text-[var(--accent)]"
             >
-              <GradientText gradient="from-purple-600 via-pink-600 to-blue-600">
-                Gallery
-              </GradientText>
+              Gallery
             </AnimatedText>
           </motion.div>
           <div className="flex items-center space-x-1 lg:space-x-2">
@@ -101,8 +99,8 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                     className={clsx(
                       'relative flex items-center space-x-1 lg:space-x-2 px-3 lg:px-4 py-2 rounded-full transition-all duration-300 group',
                       isActive
-                        ? 'text-white'
-                        : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                        ? 'text-[var(--accent-foreground)]'
+                        : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
                     )}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -110,7 +108,7 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                     {isActive && (
                       <motion.div
                         layoutId="activeBackground"
-                        className="absolute inset-0 rounded-full overflow-hidden bg-[radial-gradient(circle_at_center,#9333ea,#db2777)]"
+                        className="absolute inset-0 rounded-full overflow-hidden bg-[var(--accent)]"
                         initial={false}
                         transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                         style={{ borderRadius: '9999px' }}
@@ -121,7 +119,7 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                     
                     {!isActive && (
                       <motion.div
-                        className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-[radial-gradient(circle_at_center,#9333ea1a,#db27771a)]"
+                        className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300 bg-[var(--accent)]"
                       />
                     )}
                   </motion.button>
@@ -137,17 +135,17 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                   className={clsx(
                     'relative flex items-center justify-center space-x-1 lg:space-x-2 px-3 lg:px-4 py-2 rounded-full transition-colors duration-300 group w-full',
                     showSearchFilter
-                      ? 'text-white'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                      ? 'text-[var(--accent-foreground)]'
+                      : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
                   )}
                   
                 >
                   <motion.div
-                    className="absolute inset-0 rounded-full overflow-hidden bg-[radial-gradient(circle_at_center,#9333ea,#db2777)]"
+                    className="absolute inset-0 rounded-full overflow-hidden bg-[var(--accent)]"
                     style={{ borderRadius: '9999px' }}
                     variants={{
                       inactive: { opacity: 0 },
-                      hover: { opacity: 0.1 },
+                      hover: { opacity: 0.2 },
                       active: { opacity: 1 }
                     }}
                     initial="inactive"
@@ -171,7 +169,7 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-          className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50"
+          className="fixed top-0 left-0 right-0 z-50 bg-[var(--background)]/90 backdrop-blur-xl border-b border-[var(--border)]/50"
         >
           <div className="flex items-center justify-between px-6 py-4">
             <div className="flex items-center space-x-2">
@@ -179,16 +177,14 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                 animate={{ rotate: 360 }}
                 transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
               >
-                <Palette className="w-6 h-6 text-purple-600" />
+                <Palette className="w-6 h-6 text-[var(--accent)]" />
               </motion.div>
               <AnimatedText
                 variant="fadeInLeft"
                 delay={0.3}
-                className="font-serif text-xl font-bold"
+                className="font-serif text-xl font-bold text-[var(--accent)]"
               >
-                <GradientText gradient="from-purple-600 via-pink-600 to-blue-600">
-                  Gallery
-                </GradientText>
+                Gallery
               </AnimatedText>
             </div>
             
@@ -200,8 +196,8 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                   className={clsx(
                     'p-2 rounded-full transition-colors relative',
                     showSearchFilter
-                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
-                      : 'hover:bg-gray-100/50 dark:hover:bg-gray-700/50 text-gray-600 dark:text-gray-300'
+                      ? 'bg-[var(--accent)] text-[var(--accent-foreground)]'
+                      : 'hover:bg-[var(--accent)]/20 text-[var(--muted-foreground)]'
                   )}
                   whileTap={{ scale: 0.95 }}
                   whileHover={{ scale: 1.05 }}
@@ -212,7 +208,7 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
               
               <motion.button
                 onClick={() => setIsOpen(!isOpen)}
-                className="p-2 rounded-full hover:bg-gray-100/50 dark:hover:bg-gray-700/50 transition-colors relative"
+                className="p-2 rounded-full hover:bg-[var(--accent)]/20 transition-colors relative"
                 whileTap={{ scale: 0.95 }}
                 whileHover={{ scale: 1.05 }}
               >
@@ -246,7 +242,7 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -20, scale: 0.95 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className="fixed top-[89px] left-4 right-4 z-40 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 rounded-2xl shadow-2xl"
+                className="fixed top-[89px] left-4 right-4 z-40 bg-[var(--background)]/95 backdrop-blur-xl border border-[var(--border)]/50 rounded-2xl shadow-2xl"
               >
                 <div className="px-6 py-6 space-y-2">
                   {navItems.map((item, index) => {
@@ -268,8 +264,8 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                           className={clsx(
                             'w-full flex items-center space-x-4 px-4 py-4 rounded-xl transition-all duration-300 text-left relative group',
                             isActive
-                              ? 'bg-[radial-gradient(circle_at_center,#9333ea,#db2777)] text-white shadow-lg'
-                              : 'bg-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white dark:hover:bg-white/10'
+                              ? 'bg-[var(--accent)] text-[var(--accent-foreground)] shadow-lg'
+                              : 'bg-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--accent)]/10'
                           )}
                           whileHover={{ scale: 1.02, x: 4 }}
                           whileTap={{ scale: 0.98 }}
@@ -277,7 +273,7 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                           {isActive && (
                             <motion.div
                               layoutId="mobileActiveBackground"
-                              className="absolute inset-0 rounded-xl bg-[radial-gradient(circle_at_center,#9333ea,#db2777)]"
+                              className="absolute inset-0 rounded-xl bg-[var(--accent)]"
                               initial={false}
                               transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                             />
@@ -285,16 +281,16 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                           
                           {!isActive && (
                             <motion.div
-                              className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-[radial-gradient(circle_at_center,#9333ea1a,#db27771a)]"
+                              className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 bg-[var(--accent)]"
                             />
                           )}
                           
                           <Icon size={22} className="relative z-10" />
                           <div className="relative z-10">
-                            <div className="font-medium text-base text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white">{item.label}</div>
+                            <div className="font-medium text-base text-[var(--foreground)]">{item.label}</div>
                             <div className={clsx(
                               'text-sm transition-colors duration-300',
-                              isActive ? 'text-white/80' : 'text-gray-500 dark:text-gray-400'
+                              isActive ? 'text-[var(--accent-foreground)]/80' : 'text-[var(--muted-foreground)]'
                             )}>
                               {item.description}
                             </div>
