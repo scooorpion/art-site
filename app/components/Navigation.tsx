@@ -110,7 +110,7 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                     {isActive && (
                       <motion.div
                         layoutId="activeBackground"
-                        className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full overflow-hidden"
+                        className="absolute inset-0 rounded-full overflow-hidden bg-[radial-gradient(circle_at_center,#9333ea,#db2777)]"
                         initial={false}
                         transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                         style={{ borderRadius: '9999px' }}
@@ -121,7 +121,7 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                     
                     {!isActive && (
                       <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-pink-600/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-[radial-gradient(circle_at_center,#9333ea1a,#db27771a)]"
                       />
                     )}
                   </motion.button>
@@ -143,7 +143,7 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                   
                 >
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full overflow-hidden"
+                    className="absolute inset-0 rounded-full overflow-hidden bg-[radial-gradient(circle_at_center,#9333ea,#db2777)]"
                     style={{ borderRadius: '9999px' }}
                     variants={{
                       inactive: { opacity: 0 },
@@ -268,7 +268,7 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                           className={clsx(
                             'w-full flex items-center space-x-4 px-4 py-4 rounded-xl transition-all duration-300 text-left relative group',
                             isActive
-                              ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+                              ? 'bg-[radial-gradient(circle_at_center,#9333ea,#db2777)] text-white shadow-lg'
                               : 'bg-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white dark:hover:bg-white/10'
                           )}
                           whileHover={{ scale: 1.02, x: 4 }}
@@ -277,7 +277,7 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                           {isActive && (
                             <motion.div
                               layoutId="mobileActiveBackground"
-                              className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl"
+                              className="absolute inset-0 rounded-xl bg-[radial-gradient(circle_at_center,#9333ea,#db2777)]"
                               initial={false}
                               transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                             />
@@ -285,7 +285,7 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                           
                           {!isActive && (
                             <motion.div
-                              className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-pink-600/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                              className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-[radial-gradient(circle_at_center,#9333ea1a,#db27771a)]"
                             />
                           )}
                           

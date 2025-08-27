@@ -191,106 +191,105 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
 
         {/* 主展示区域 */}
         <div className="relative h-[70vh] flex items-center justify-center">
-          {/* 侧边作品 */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            {sideArtworks.map(({ index, position, offset }) => {
-              const artwork = artworks[index];
-              const isLeft = position === 'left';
-              const translateX = isLeft ? -200 - (offset * 120) : 200 + (offset * 120);
-              const artworkDimensions = imageDimensions.dimensionsMap[artwork.image];
-               const sideLayout = artworkDimensions?.aspectRatio ? 
-                 calculateSideImageLayout(
-                   currentImageDimensions.dimensions?.aspectRatio || 1,
-                   artworkDimensions.aspectRatio,
-                   offset,
-                   position as 'left' | 'right'
-                 ) : null;
-               
-               const scale = 1 - (offset * 0.15);
-               const opacity = sideLayout ? sideLayout.opacity : 1 - (offset * 0.3);
-               const zIndex = sideLayout ? sideLayout.zIndex : 10 - offset;
-
-              return (
-                <motion.div
-                  key={`${index}-${position}-${offset}`}
-                  className="absolute cursor-pointer group"
-                  style={{
-                    transform: `translateX(${translateX}px) scale(${scale})`,
-                    opacity,
-                    zIndex
-                  }}
-                  onClick={() => goToIndex(index)}
-                  transition={{ duration: 0.3 }}
-                >
-                  <div 
-                    className="overflow-hidden shadow-2xl transform group-hover:scale-105 transition-transform duration-300"
-                    style={Object.keys(sideImageStyles[sideArtworks.findIndex(item => item.index === index && item.position === position && item.offset === offset)] || {}).length > 0 ? 
-                      sideImageStyles[sideArtworks.findIndex(item => item.index === index && item.position === position && item.offset === offset)] : 
-                      { width: '192px', height: '256px' } // 默认尺寸
-                    }
-                  >
+          {/* 平铺式图片展示 */}
+          <div className="flex items-center justify-center gap-6 overflow-x-hidden px-4">
+            {/* 左侧图片 */}
+            {sideArtworks.filter(({ position }) => position === 'left').reverse().map(({ index }) => {
+               const artwork = artworks[index];
+               const artworkDimensions = imageDimensions.dimensionsMap[artwork.image];
+               return (
+                 <motion.div
+                   key={`left-${index}`}
+                   className="cursor-pointer group flex-shrink-0"
+                   onClick={() => goToIndex(index)}
+                   whileHover={{ scale: 1.05 }}
+                   transition={{ duration: 0.3 }}
+                 >
+                   <div className="overflow-hidden shadow-2xl transform transition-transform duration-300 relative">
                     <OptimizedImage
                       src={artwork.image}
                       alt={artwork.title}
-                      fill
-                      sizes="200px"
-                      className="group-hover:brightness-110 transition-all duration-300"
+                      width={280}
+                      height={artworkDimensions?.aspectRatio ? Math.round(280 / artworkDimensions.aspectRatio) : 280}
+                      sizes="280px"
+                      className="group-hover:brightness-110 transition-all duration-300 object-contain"
+                    />
+                  </div>
+                </motion.div>
+              );
+            })}
+            
+            {/* 中央主作品 */}
+            <motion.div
+              key={currentIndex}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+              className="cursor-pointer group flex-shrink-0"
+              onClick={() => onArtworkClick(currentArtwork)}
+            >
+              <div className="overflow-hidden shadow-2xl transition-all duration-300 ease-in-out relative">
+                <OptimizedImage
+                  src={currentArtwork.image}
+                  alt={currentArtwork.title}
+                  width={280}
+                  height={currentImageDimensions.dimensions?.aspectRatio ? Math.round(280 / currentImageDimensions.dimensions.aspectRatio) : 280}
+                  sizes="280px"
+                  priority
+                  className="group-hover:scale-105 transition-transform duration-700 object-contain"
+                />
+                
+                {/* 悬停遮罩 */}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
+                
+                {/* 信息按钮 */}
+                <motion.button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowInfo(!showInfo);
+                  }}
+                  className="absolute top-4 right-4 p-2 bg-black/50 dark:bg-white/20 text-white dark:text-gray-200 rounded-full hover:bg-black/70 dark:hover:bg-white/40 transition-colors"
+                  whileHover={{ scale: 1.1, rotate: 15 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                >
+                  <motion.div
+                    animate={{ rotate: showInfo ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Info size={20} />
+                  </motion.div>
+                </motion.button>
+              </div>
+            </motion.div>
+            
+            {/* 右侧图片 */}
+            {sideArtworks.filter(({ position }) => position === 'right').map(({ index }) => {
+               const artwork = artworks[index];
+               const artworkDimensions = imageDimensions.dimensionsMap[artwork.image];
+               return (
+                 <motion.div
+                   key={`right-${index}`}
+                   className="cursor-pointer group flex-shrink-0"
+                   onClick={() => goToIndex(index)}
+                   whileHover={{ scale: 1.05 }}
+                   transition={{ duration: 0.3 }}
+                 >
+                   <div className="overflow-hidden shadow-2xl transform transition-transform duration-300 relative">
+                    <OptimizedImage
+                      src={artwork.image}
+                      alt={artwork.title}
+                      width={280}
+                      height={artworkDimensions?.aspectRatio ? Math.round(280 / artworkDimensions.aspectRatio) : 280}
+                      sizes="280px"
+                      className="group-hover:brightness-110 transition-all duration-300 object-contain"
                     />
                   </div>
                 </motion.div>
               );
             })}
           </div>
-
-          {/* 中央主作品 */}
-          <motion.div
-            key={currentIndex}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-            className="relative z-20 cursor-pointer group"
-            onClick={() => onArtworkClick(currentArtwork)}
-          >
-            <div 
-              className="overflow-hidden shadow-2xl transition-all duration-300 ease-in-out"
-              style={Object.keys(mainImageStyles).length > 0 ? 
-                 mainImageStyles : 
-                 { width: '480px', height: '480px', minWidth: '480px', minHeight: '480px' } // 默认尺寸与水合前保持一致
-               }
-            >
-              <OptimizedImage
-                src={currentArtwork.image}
-                alt={currentArtwork.title}
-                fill
-                sizes={imageSizes.hero}
-                priority
-                className="group-hover:scale-105 transition-transform duration-700"
-              />
-              
-              {/* 悬停遮罩 */}
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
-              
-              {/* 信息按钮 */}
-              <motion.button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowInfo(!showInfo);
-                }}
-                className="absolute top-4 right-4 p-2 bg-black/50 dark:bg-white/20 text-white dark:text-gray-200 rounded-full hover:bg-black/70 dark:hover:bg-white/40 transition-colors"
-                whileHover={{ scale: 1.1, rotate: 15 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
-              >
-                <motion.div
-                  animate={{ rotate: showInfo ? 180 : 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Info size={20} />
-                </motion.div>
-              </motion.button>
-            </div>
-          </motion.div>
 
           {/* 导航按钮 */}
           <motion.button
