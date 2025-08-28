@@ -309,30 +309,17 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
 
 
         {/* 控制栏 - 固定在底部 */}
-        <div className="absolute bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-8 pb-4 px-4">
-          <div className="flex items-center justify-center space-x-6">
-            {/* 自动播放控制 */}
+        <div className="absolute bottom-0 left-0 right-0 z-40 pt-2 pb-2 px-4">
+          <div className="flex items-center justify-center space-x-4">
+            {/* 播放按钮 */}
             <motion.button
               onClick={() => setIsAutoPlay(!isAutoPlay)}
-              className={clsx(
-                'flex items-center space-x-2 px-4 py-2 rounded-full transition-colors',
-                isAutoPlay
-                  ? 'bg-white/20 dark:bg-gray-800/60 text-white dark:text-gray-200'
-                  : 'bg-white/10 dark:bg-gray-800/30 text-gray-400 dark:text-gray-500 hover:text-white dark:hover:text-gray-200'
-              )}
+              className="p-2 rounded-full bg-black/20 dark:bg-white/20 hover:bg-black/30 dark:hover:bg-white/30 text-black dark:text-white transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              <motion.div
-                key={isAutoPlay ? 'pause' : 'play'}
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.2 }}
-              >
-                {isAutoPlay ? <Pause size={16} /> : <Play size={16} />}
-              </motion.div>
-              <span className="text-sm text-current">{isAutoPlay ? '暂停' : '播放'}</span>
+              {isAutoPlay ? <Pause size={16} /> : <Play size={16} />}
             </motion.button>
 
             {/* 进度指示器 */}
@@ -344,15 +331,15 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
                   className={clsx(
                     'w-2 h-2 rounded-full transition-all duration-300',
                     index === currentIndex
-                      ? 'bg-white dark:bg-gray-200 w-8'
-                      : 'bg-white/40 dark:bg-gray-500 hover:bg-white/60 dark:hover:bg-gray-400'
+                      ? 'bg-black dark:bg-white w-8'
+                      : 'bg-black/40 dark:bg-white/40 hover:bg-black/60 dark:hover:bg-white/60'
                   )}
                 />
               ))}
             </div>
 
             {/* 计数器 */}
-            <div className="text-sm text-gray-400">
+            <div className="text-sm text-gray-600 dark:text-gray-400">
               {currentIndex + 1} / {artworks.length}
             </div>
           </div>

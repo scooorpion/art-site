@@ -259,6 +259,7 @@ export default function GridGallery({ artworks, onArtworkClick, showSearchFilter
                     className="p-4 bg-[var(--background)]"
                     initial={{ opacity: 1 }}
                   >
+                    <h3 className="font-medium text-base mb-1 text-[var(--foreground)]">{artwork.title}</h3>
                     <p className="text-[var(--muted-foreground)] text-sm">
                       {artwork.year}
                     </p>

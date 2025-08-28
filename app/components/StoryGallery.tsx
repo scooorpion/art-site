@@ -107,42 +107,36 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-black/80 to-transparent p-4 sm:p-6"
+            className="flex-shrink-0 bg-black/80 backdrop-blur-md p-4 z-20"
           >
             <div className="flex items-center justify-between text-white">
               <div className="flex items-center space-x-4">
                 <motion.button
                   onClick={onClose}
-                  className="p-2 hover:bg-white/20 rounded-full transition-colors mobile-button"
-                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  className="p-2 hover:bg-white/20 transition-colors rounded-full"
+                  whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
-                  <X size={24} />
+                  <X size={20} />
                 </motion.button>
-                <div className="flex items-center space-x-2">
-                  <BookOpen size={20} />
-                  <span className="font-medium">
-                    <AnimatedText variant="fadeInLeft">
-                      艺术故事
-                    </AnimatedText>
-                  </span>
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-4">
+                
                 <motion.button
                   onClick={() => setShowThumbnails(!showThumbnails)}
-                  className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                  className={clsx(
+                    'p-2 transition-colors rounded-full',
+                    showThumbnails ? 'bg-blue-400/20 text-blue-400' : 'hover:bg-white/20'
+                  )}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  {showThumbnails ? <ChevronsDown size={20} /> : <ChevronsUp size={20} />}
+                  {showThumbnails ? <ChevronsDown size={18} /> : <ChevronsUp size={18} />}
                 </motion.button>
+                
                 <motion.button
                   onClick={() => setReadingMode(!readingMode)}
                   className={clsx(
-                    'px-4 py-2 rounded-full transition-colors',
+                    'px-4 py-2 transition-colors text-sm font-medium rounded-full',
                     readingMode ? 'bg-white text-black' : 'bg-white/20 hover:bg-white/30'
                   )}
                   whileHover={{ scale: 1.05 }}
@@ -151,22 +145,33 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
                 >
                   阅读模式
                 </motion.button>
+                
                 <motion.button 
-                  className="p-2 hover:bg-white/20 rounded-full transition-colors mobile-button"
+                  className="p-2 hover:bg-white/20 transition-colors rounded-full"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
-                  <Heart size={20} />
+                  <Heart size={18} />
                 </motion.button>
+                
                 <motion.button 
-                  className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                  className="p-2 hover:bg-white/20 transition-colors rounded-full"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
-                  <Share2 size={20} />
+                  <Share2 size={18} />
                 </motion.button>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <BookOpen size={18} />
+                <span className="text-lg font-medium">
+                  <AnimatedText variant="fadeInLeft">
+                    艺术故事
+                  </AnimatedText>
+                </span>
               </div>
             </div>
           </motion.div>
@@ -174,7 +179,7 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
       </AnimatePresence>
 
       {/* 主内容区域 */}
-      <div className="flex-grow relative w-full overflow-hidden">
+        <div className="flex-grow relative w-full overflow-hidden">
         <AnimatePresence mode="sync" custom={direction}>
           <motion.div
             key={currentIndex}
@@ -231,7 +236,6 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
                         {currentArtwork.title}
                       </h1>
                       <div className="text-lg sm:text-xl text-gray-300 mb-4 md:mb-8">
-                        <p>{currentArtwork.artist}</p>
                         <p className="text-base sm:text-lg">{currentArtwork.year} · {currentArtwork.medium}</p>
                         <p className="text-sm sm:text-base text-gray-400">{currentArtwork.dimensions}</p>
                       </div>
@@ -297,7 +301,7 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
                           {currentArtwork.title}
                         </h2>
                         <p className="text-lg sm:text-xl text-gray-300 mb-2 sm:mb-4">
-                          {currentArtwork.artist} · {currentArtwork.year}
+                          {currentArtwork.year}
                         </p>
                         <p className="text-gray-300 sm:text-gray-200 leading-relaxed max-w-3xl">
                           {currentArtwork.description}
