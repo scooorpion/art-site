@@ -330,7 +330,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
                   key={index}
                   onClick={() => goToIndex(index)}
                   className={clsx(
-                    'rounded-full transition-all duration-300 min-w-[24px] min-h-[24px] flex items-center justify-center',
+                    'rounded-full transition-all duration-300 flex items-center justify-center',
                     index === currentIndex
                       ? 'bg-black dark:bg-white w-6 h-2 md:w-8 md:h-2'
                       : 'bg-black/40 dark:bg-white/40 active:bg-black/60 md:hover:bg-black/60 dark:active:bg-white/60 dark:md:hover:bg-white/60 w-2 h-2'
