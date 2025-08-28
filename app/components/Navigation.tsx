@@ -59,19 +59,28 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-        className="hidden md:flex fixed top-8 left-1/2 transform -translate-x-1/2 z-50 bg-[var(--background)]/90 backdrop-blur-xl border border-[var(--border)]/50 px-6 py-3 shadow-lg"
-        style={{ borderRadius: '0.75rem' }}
+        className="hidden md:flex fixed top-0 left-0 right-0 z-50 bg-[var(--background)]/90 backdrop-blur-xl border-b border-[var(--border)]/50 px-6 lg:px-12 py-4"
       >
-        <div className="flex items-center space-x-4 lg:space-x-8">
+        <div className="w-full max-w-7xl mx-auto flex items-center justify-between">
+          {/* Logo区域 */}
           <motion.div
-            className="w-2 h-2 bg-[var(--accent)] rounded-full flex-shrink-0"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
+            className="flex items-center space-x-3"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-          />
-          <div className="flex items-center space-x-1 lg:space-x-2">
+          >
+            <motion.div
+              className="w-2 h-2 bg-[var(--accent)] rounded-full flex-shrink-0"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            />
+            <span className="text-lg font-semibold text-[var(--foreground)]">GALLERY</span>
+          </motion.div>
+          
+          {/* 导航链接区域 */}
+          <div className="flex items-center space-x-6 lg:space-x-8">
             {navItems.map((item, index) => {
-              // 移除了图标引用
               const isActive = currentView === item.id;
               return (
                 <motion.div
@@ -84,43 +93,50 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                   <motion.button
                     onClick={() => handleViewChange(item.id)}
                     className={clsx(
-                      'relative px-3 lg:px-4 py-2 transition-all duration-300 group',
+                      'relative px-4 py-2 transition-all duration-300 group',
                       isActive
-                        ? 'text-[var(--accent-foreground)] bg-[var(--accent)]'
-                        : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--accent)]/10'
+                        ? 'text-[var(--accent)] font-medium'
+                        : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
                     )}
-                    style={{ borderRadius: '0.5rem' }}
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.95 }}
                   >
                     <span className="text-sm font-medium whitespace-nowrap">{item.label}</span>
+                    {isActive && (
+                      <motion.div
+                        layoutId="desktopActiveIndicator"
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--accent)]"
+                        initial={false}
+                        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                      />
+                    )}
                   </motion.button>
                 </motion.div>
               );
             })}
             
             {/* 搜索按钮 - 仅在grid视图显示 */}
-              {currentView === 'grid' && onToggleSearchFilter && (
-                <motion.div
-                  className="relative ml-1 flex-shrink-0"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
-                >
+            {currentView === 'grid' && onToggleSearchFilter && (
+              <motion.div
+                className="relative flex-shrink-0"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
                 <motion.button
-                    onClick={onToggleSearchFilter}
-                    className={clsx(
-                      'relative flex items-center justify-center p-2 transition-colors duration-300',
-                      showSearchFilter
-                        ? 'text-[var(--accent-foreground)] bg-[var(--accent)]'
-                        : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--accent)]/10'
-                    )}
-                    style={{ borderRadius: '0.5rem' }}
-                    whileTap={{ scale: 0.95 }}
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <Search size={18} />
-                  </motion.button>
+                  onClick={onToggleSearchFilter}
+                  className={clsx(
+                    'relative flex items-center justify-center p-2 transition-colors duration-300',
+                    showSearchFilter
+                      ? 'text-[var(--accent)] bg-[var(--accent)]/10'
+                      : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--accent)]/10'
+                  )}
+                  style={{ borderRadius: '0.5rem' }}
+                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <Search size={18} />
+                </motion.button>
               </motion.div>
             )}
           </div>
@@ -193,7 +209,7 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -20, scale: 0.95 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className="fixed top-[89px] left-4 right-4 z-40 bg-[var(--background)]/95 backdrop-blur-xl border border-[var(--border)]/50 shadow-2xl"
+                className="fixed top-[73px] left-4 right-4 z-40 bg-[var(--background)]/95 backdrop-blur-xl border border-[var(--border)]/50 shadow-2xl"
                 style={{ borderRadius: '1rem' }}
               >
                 <div className="px-6 py-6 space-y-2">

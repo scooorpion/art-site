@@ -201,7 +201,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
     <div className="min-h-screen bg-white dark:bg-black text-gray-800 dark:text-white">
         <div className="relative h-screen flex flex-col">
         {/* 主展示区域 - 全屏显示 */}
-        <div className="flex-1 relative flex items-center justify-center pt-16 sm:pt-20 md:pt-24">
+        <div className="flex-1 relative flex items-center justify-center pt-20 md:pt-20">
           {/* 平铺式图片展示 */}
           <div className="flex items-center justify-center gap-6 overflow-x-hidden px-4">
             {/* 左侧图片 */}

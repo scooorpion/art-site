@@ -58,7 +58,7 @@ export default function GridGallery({ artworks, onArtworkClick, showSearchFilter
   };
 
   return (
-    <div className="min-h-screen bg-[var(--background)] pt-20 sm:pt-24 md:pt-32 mobile-nav-padding">
+    <div className="min-h-screen bg-[var(--background)] pt-20 md:pt-20 mobile-nav-padding">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 large-container">
 
 
