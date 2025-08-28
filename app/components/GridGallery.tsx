@@ -228,7 +228,7 @@ export default function GridGallery({ artworks, onArtworkClick, showSearchFilter
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 mb-12 mobile-grid tablet-grid large-grid"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 sm:gap-3 lg:gap-4 mb-12"
         >
           <AnimatePresence>
             {filteredArtworks.map((artwork) => (
@@ -239,101 +239,32 @@ export default function GridGallery({ artworks, onArtworkClick, showSearchFilter
                 transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
                 className="group cursor-pointer"
                 onClick={() => onArtworkClick(artwork)}
-                whileHover={{ y: -8 }}
               >
-                <div className="bg-[var(--muted)] rounded-xl shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden">
+                <div className="bg-[var(--background)] hover:bg-[var(--muted)] transition-all duration-300 overflow-hidden">
                   {/* 图片容器 */}
-                  <div className="relative aspect-[4/3] overflow-hidden transition-all duration-300 ease-in-out">
+                  <div className="relative aspect-[4/3] overflow-hidden">
                     <OptimizedImage
                       src={artwork.image}
                       alt={artwork.title}
                       fill
                       sizes={imageSizes.gallery}
-                      className="group-hover:scale-110 transition-transform duration-700"
+                      className="object-cover"
                     />
                     
-                    {/* 渐变遮罩 */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
-                    
-                    {/* 交互按钮 */}
-                    <div className="absolute top-3 right-3 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-4 group-hover:translate-x-0">
-                      <motion.button
-                        className="p-2 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30 transition-colors duration-200 mobile-button"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // 收藏功能
-                        }}
-                      >
-                        <Heart className="w-4 h-4" />
-                      </motion.button>
-                      <motion.button
-                        className="p-2 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30 transition-colors duration-200"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // 分享功能
-                        }}
-                      >
-                        <Share2 className="w-4 h-4" />
-                      </motion.button>
-                    </div>
-                    
-                    {/* 底部信息 */}
-                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <div className="flex items-center space-x-2 text-sm">
-                        <Eye className="w-4 h-4" />
-                        <span>点击查看详情</span>
-                      </div>
-                      <p className="text-xs opacity-80 mt-1">{artwork.medium}</p>
-                    </div>
-                    
-                    {/* 特色标签 */}
-                    {artwork.featured && (
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="absolute top-3 left-3 bg-[var(--accent)] text-[var(--accent-foreground)] px-3 py-1 rounded-full text-xs font-medium shadow-lg"
-                      >
-                        精选
-                      </motion.div>
-                    )}
+
                   </div>
 
                   {/* 作品信息 */}
                   <motion.div
-                    className="p-4 bg-[var(--muted)]"
-                    initial={{ opacity: 0.8 }}
-                    whileHover={{ opacity: 1 }}
+                    className="p-4 bg-[var(--background)]"
+                    initial={{ opacity: 1 }}
                   >
-                    <h3 className="font-serif text-lg font-semibold text-[var(--foreground)] mb-1 group-hover:text-[var(--accent)] transition-all duration-300">
-                      {artwork.title}
-                    </h3>
-                    <p className="text-[var(--muted-foreground)] text-sm mb-2 group-hover:text-[var(--foreground)] transition-colors duration-200">
-                      {artwork.artist} · {artwork.year}
+                    <p className="text-[var(--muted-foreground)] text-sm">
+                      {artwork.year}
                     </p>
-                    <p className="text-gray-500 dark:text-gray-400 text-xs mb-3">
-                      {artwork.medium} · {artwork.dimensions}
+                    <p className="text-[var(--muted-foreground)] text-xs mt-1">
+                      {artwork.medium}
                     </p>
-                    
-                    {/* 标签 */}
-                    <div className="flex flex-wrap gap-1">
-                      {artwork.tags.slice(0, 3).map((tag) => (
-                        <span
-                          key={tag}
-                          className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs rounded-full"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                      {artwork.tags.length > 3 && (
-                        <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs rounded-full">
-                          +{artwork.tags.length - 3}
-                        </span>
-                      )}
-                    </div>
                   </motion.div>
                 </div>
               </motion.div>

@@ -2,13 +2,13 @@
 @import "./responsive-optimizations.css";
 
 :root {
-  --background: #EEEEEC;
-  --foreground: #43382b;
-  --muted: #E0DCD3;
-  --muted-foreground: #6D6050;
-  --border: #D1C9BD;
-  --accent: #C0A062;
-  --accent-foreground: #43382b;
+  --background: #FAFAFA;
+  --foreground: #1A1A1A;
+  --muted: #F5F5F5;
+  --muted-foreground: #6B7280;
+  --border: #E5E7EB;
+  --accent: #000000;
+  --accent-foreground: #FFFFFF;
 }
 
 @theme inline {
@@ -25,13 +25,13 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #1a1a1a;
-    --foreground: #EEEEEC;
-    --muted: #2a2a2a;
-    --muted-foreground: #a3a3a3;
-    --border: #3a3a3a;
-    --accent: #C0A062;
-    --accent-foreground: #1a1a1a;
+    --background: #000000;
+    --foreground: #FFFFFF;
+    --muted: #0A0A0A;
+    --muted-foreground: #9CA3AF;
+    --border: #1F2937;
+    --accent: #FFFFFF;
+    --accent-foreground: #000000;
   }
   body {
     background: #000000;

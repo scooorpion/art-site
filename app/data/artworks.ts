@@ -18,7 +18,7 @@ export const artworks: Artwork[] = [
   {
     id: '1',
     title: '静谧的午后',
-    artist: '李明轩',
+    artist: '张明轩',
     year: 2023,
     medium: '布面油画',
     dimensions: '80 × 60 cm',
@@ -33,7 +33,7 @@ export const artworks: Artwork[] = [
   {
     id: '2',
     title: '城市印象',
-    artist: '王雅琴',
+    artist: '张明轩',
     year: 2023,
     medium: '纸本素描',
     dimensions: '42 × 30 cm',
@@ -48,7 +48,7 @@ export const artworks: Artwork[] = [
   {
     id: '3',
     title: '花开时节',
-    artist: '陈志华',
+    artist: '张明轩',
     year: 2022,
     medium: '布面油画',
     dimensions: '100 × 80 cm',
@@ -63,7 +63,7 @@ export const artworks: Artwork[] = [
   {
     id: '4',
     title: '人物肖像研究',
-    artist: '张美丽',
+    artist: '张明轩',
     year: 2023,
     medium: '纸本炭笔',
     dimensions: '35 × 25 cm',
@@ -78,7 +78,7 @@ export const artworks: Artwork[] = [
   {
     id: '5',
     title: '抽象构成',
-    artist: '刘建国',
+    artist: '张明轩',
     year: 2023,
     medium: '综合材料',
     dimensions: '120 × 90 cm',
@@ -93,7 +93,7 @@ export const artworks: Artwork[] = [
   {
     id: '6',
     title: '山水意境',
-    artist: '赵文静',
+    artist: '张明轩',
     year: 2022,
     medium: '布面油画',
     dimensions: '150 × 100 cm',
@@ -108,7 +108,7 @@ export const artworks: Artwork[] = [
   {
     id: '7',
     title: '都市夜景',
-    artist: '孙志明',
+    artist: '张明轩',
     year: 2023,
     medium: '纸本水彩',
     dimensions: '40 × 30 cm',
@@ -123,7 +123,7 @@ export const artworks: Artwork[] = [
   {
     id: '8',
     title: '静物写生',
-    artist: '李小红',
+    artist: '张明轩',
     year: 2023,
     medium: '布面油画',
     dimensions: '60 × 50 cm',

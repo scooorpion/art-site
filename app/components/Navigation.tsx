@@ -42,13 +42,13 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
   const navItems = [
     {
       id: 'grid' as ViewMode,
-      label: '画廊总览',
+      label: 'OVERVIEW',
       icon: Grid3X3,
       description: '平铺式展示所有作品'
     },
     {
       id: 'central' as ViewMode,
-      label: '中央展厅',
+      label: 'FOCUS',
       icon: Focus,
       description: '聚焦式作品展示'
     }
@@ -68,18 +68,12 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
             whileHover={{ scale: 1.05 }}
             className="flex items-center space-x-2 lg:space-x-3 flex-shrink-0"
           >
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-            >
-              <Palette className="w-6 h-6 text-[var(--accent)]" />
-            </motion.div>
             <AnimatedText
               variant="fadeInLeft"
               delay={0.3}
               className="font-serif text-xl font-bold text-[var(--accent)]"
             >
-              Gallery
+              冯巍
             </AnimatedText>
           </motion.div>
           <div className="flex items-center space-x-1 lg:space-x-2">
@@ -154,7 +148,7 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
                     transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
                   />
                   <Search size={18} className="relative z-10 flex-shrink-0" />
-                  <span className="text-sm font-medium relative z-10 whitespace-nowrap">搜索</span>
+                  {/* <span className="text-sm font-medium relative z-10 whitespace-nowrap">SEARCH</span> */}
                 </motion.button>
               </div>
             )}
@@ -173,18 +167,12 @@ export default function Navigation({ currentView, showSearchFilter, onToggleSear
         >
           <div className="flex items-center justify-between px-6 py-4">
             <div className="flex items-center space-x-2">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-              >
-                <Palette className="w-6 h-6 text-[var(--accent)]" />
-              </motion.div>
               <AnimatedText
                 variant="fadeInLeft"
                 delay={0.3}
                 className="font-serif text-xl font-bold text-[var(--accent)]"
               >
-                Gallery
+                张明轩
               </AnimatedText>
             </div>
             
