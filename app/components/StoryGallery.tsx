@@ -110,68 +110,131 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
             className="flex-shrink-0 bg-black/80 backdrop-blur-md p-4 z-20"
           >
             <div className="flex items-center justify-between text-white">
-              <div className="flex items-center space-x-4">
-                <motion.button
-                  onClick={onClose}
-                  className="p-2 hover:bg-white/20 transition-colors rounded-full"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                >
-                  <X size={20} />
-                </motion.button>
+              {/* 移动端布局 */}
+              <div className="flex md:hidden items-center justify-between w-full">
+                <div className="flex items-center space-x-2">
+                  <motion.button
+                    onClick={onClose}
+                    className="p-3 active:bg-white/20 transition-colors rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center"
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <X size={20} />
+                  </motion.button>
+                  
+                  <motion.button
+                    onClick={() => setShowThumbnails(!showThumbnails)}
+                    className={clsx(
+                      'p-3 transition-colors rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center',
+                      showThumbnails ? 'bg-blue-400/20 text-blue-400' : 'active:bg-white/20'
+                    )}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {showThumbnails ? <ChevronsDown size={18} /> : <ChevronsUp size={18} />}
+                  </motion.button>
+                </div>
                 
-                <motion.button
-                  onClick={() => setShowThumbnails(!showThumbnails)}
-                  className={clsx(
-                    'p-2 transition-colors rounded-full',
-                    showThumbnails ? 'bg-blue-400/20 text-blue-400' : 'hover:bg-white/20'
-                  )}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {showThumbnails ? <ChevronsDown size={18} /> : <ChevronsUp size={18} />}
-                </motion.button>
+                <div className="flex items-center space-x-1">
+                  <BookOpen size={16} />
+                  <span className="text-sm font-medium">
+                    <AnimatedText variant="fadeInLeft">
+                      艺术故事
+                    </AnimatedText>
+                  </span>
+                </div>
                 
-                <motion.button
-                  onClick={() => setReadingMode(!readingMode)}
-                  className={clsx(
-                    'px-4 py-2 transition-colors text-sm font-medium rounded-full',
-                    readingMode ? 'bg-white text-black' : 'bg-white/20 hover:bg-white/30'
-                  )}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                >
-                  阅读模式
-                </motion.button>
-                
-                <motion.button 
-                  className="p-2 hover:bg-white/20 transition-colors rounded-full"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                >
-                  <Heart size={18} />
-                </motion.button>
-                
-                <motion.button 
-                  className="p-2 hover:bg-white/20 transition-colors rounded-full"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                >
-                  <Share2 size={18} />
-                </motion.button>
+                <div className="flex items-center space-x-1">
+                  <motion.button
+                    onClick={() => setReadingMode(!readingMode)}
+                    className={clsx(
+                      'px-3 py-2 transition-colors text-xs font-medium rounded-full min-h-[36px]',
+                      readingMode ? 'bg-white text-black' : 'bg-white/20 active:bg-white/30'
+                    )}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    阅读
+                  </motion.button>
+                  
+                  <motion.button 
+                    className="p-2 active:bg-white/20 transition-colors rounded-full min-w-[36px] min-h-[36px] flex items-center justify-center"
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Heart size={16} />
+                  </motion.button>
+                  
+                  <motion.button 
+                    className="p-2 active:bg-white/20 transition-colors rounded-full min-w-[36px] min-h-[36px] flex items-center justify-center"
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Share2 size={16} />
+                  </motion.button>
+                </div>
               </div>
               
-              <div className="flex items-center space-x-2">
-                <BookOpen size={18} />
-                <span className="text-lg font-medium">
-                  <AnimatedText variant="fadeInLeft">
-                    艺术故事
-                  </AnimatedText>
-                </span>
+              {/* 桌面端布局 */}
+              <div className="hidden md:flex items-center justify-between w-full">
+                <div className="flex items-center space-x-4">
+                  <motion.button
+                    onClick={onClose}
+                    className="p-2 hover:bg-white/20 transition-colors rounded-full"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
+                    <X size={20} />
+                  </motion.button>
+                  
+                  <motion.button
+                    onClick={() => setShowThumbnails(!showThumbnails)}
+                    className={clsx(
+                      'p-2 transition-colors rounded-full',
+                      showThumbnails ? 'bg-blue-400/20 text-blue-400' : 'hover:bg-white/20'
+                    )}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {showThumbnails ? <ChevronsDown size={18} /> : <ChevronsUp size={18} />}
+                  </motion.button>
+                  
+                  <motion.button
+                    onClick={() => setReadingMode(!readingMode)}
+                    className={clsx(
+                      'px-4 py-2 transition-colors text-sm font-medium rounded-full',
+                      readingMode ? 'bg-white text-black' : 'bg-white/20 hover:bg-white/30'
+                    )}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
+                    阅读模式
+                  </motion.button>
+                  
+                  <motion.button 
+                    className="p-2 hover:bg-white/20 transition-colors rounded-full"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
+                    <Heart size={18} />
+                  </motion.button>
+                  
+                  <motion.button 
+                    className="p-2 hover:bg-white/20 transition-colors rounded-full"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
+                    <Share2 size={18} />
+                  </motion.button>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  <BookOpen size={18} />
+                  <span className="text-lg font-medium">
+                    <AnimatedText variant="fadeInLeft">
+                      艺术故事
+                    </AnimatedText>
+                  </span>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -392,7 +455,7 @@ export default function StoryGallery({ artworks, selectedArtwork, onClose }: Sto
             className="absolute bottom-0 left-0 right-0 z-20"
           >
             <div className="bg-black/80 backdrop-blur-md p-4">
-              <div className="flex justify-center space-x-4 overflow-x-auto pb-4">
+              <div className="flex justify-center space-x-4 overflow-x-auto pb-4 scrollbar-hide">
                 {artworks.map((artwork, index) => {
                   const thumbnailSize = { width: 80, height: 96 };
                   

@@ -286,60 +286,61 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
           </div>
 
           {/* 导航按钮 */}
+          {/* 移动端导航按钮 */}
           <motion.button
             onClick={goToPrevious}
-            className="absolute left-4 z-30 p-3 bg-black/50 dark:bg-white/20 text-white dark:text-gray-200 hover:bg-black/70 dark:hover:bg-white/40 rounded-full transition-colors"
-            whileHover={{ scale: 1.1 }}
+            className="absolute left-2 md:left-4 z-30 p-2 md:p-3 bg-black/50 dark:bg-white/20 text-white dark:text-gray-200 active:bg-black/70 md:hover:bg-black/70 dark:active:bg-white/40 dark:md:hover:bg-white/40 rounded-full transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
             whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.1 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
-            <ChevronLeft size={24} />
+            <ChevronLeft size={20} className="md:w-6 md:h-6" />
           </motion.button>
           <motion.button
             onClick={goToNext}
-            className="absolute right-4 z-30 p-3 bg-black/50 dark:bg-white/20 text-white dark:text-gray-200 hover:bg-black/70 dark:hover:bg-white/40 rounded-full transition-colors"
-            whileHover={{ scale: 1.1 }}
+            className="absolute right-2 md:right-4 z-30 p-2 md:p-3 bg-black/50 dark:bg-white/20 text-white dark:text-gray-200 active:bg-black/70 md:hover:bg-black/70 dark:active:bg-white/40 dark:md:hover:bg-white/40 rounded-full transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
             whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.1 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
-            <ChevronRight size={24} />
+            <ChevronRight size={20} className="md:w-6 md:h-6" />
           </motion.button>
         </div>
 
 
 
         {/* 控制栏 - 固定在底部 */}
-        <div className="absolute bottom-0 left-0 right-0 z-40 pt-2 pb-2 px-4">
-          <div className="flex items-center justify-center space-x-4">
+        <div className="absolute bottom-0 left-0 right-0 z-40 pt-2 pb-2 px-2 md:px-4">
+          <div className="flex items-center justify-center space-x-2 md:space-x-4">
             {/* 播放按钮 */}
             <motion.button
               onClick={() => setIsAutoPlay(!isAutoPlay)}
-              className="p-2 rounded-full bg-black/20 dark:bg-white/20 hover:bg-black/30 dark:hover:bg-white/30 text-black dark:text-white transition-colors"
+              className="p-2 md:p-2 rounded-full bg-black/20 dark:bg-white/20 active:bg-black/30 md:hover:bg-black/30 dark:active:bg-white/30 dark:md:hover:bg-white/30 text-black dark:text-white transition-colors min-w-[36px] min-h-[36px] flex items-center justify-center"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              {isAutoPlay ? <Pause size={16} /> : <Play size={16} />}
+              {isAutoPlay ? <Pause size={14} className="md:w-4 md:h-4" /> : <Play size={14} className="md:w-4 md:h-4" />}
             </motion.button>
 
             {/* 进度指示器 */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1 md:space-x-2">
               {artworks.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => goToIndex(index)}
                   className={clsx(
-                    'w-2 h-2 rounded-full transition-all duration-300',
+                    'rounded-full transition-all duration-300 min-w-[24px] min-h-[24px] flex items-center justify-center',
                     index === currentIndex
-                      ? 'bg-black dark:bg-white w-8'
-                      : 'bg-black/40 dark:bg-white/40 hover:bg-black/60 dark:hover:bg-white/60'
+                      ? 'bg-black dark:bg-white w-6 h-2 md:w-8 md:h-2'
+                      : 'bg-black/40 dark:bg-white/40 active:bg-black/60 md:hover:bg-black/60 dark:active:bg-white/60 dark:md:hover:bg-white/60 w-2 h-2'
                   )}
                 />
               ))}
             </div>
 
             {/* 计数器 */}
-            <div className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400 min-w-[40px] text-center">
               {currentIndex + 1} / {artworks.length}
             </div>
           </div>
