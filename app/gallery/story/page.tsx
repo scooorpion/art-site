@@ -5,7 +5,6 @@ import { Suspense } from 'react';
 import StoryGallery from '../../components/StoryGallery';
 import Navigation from '../../components/Navigation';
 import { artworks } from '../../data/artworks';
-import { Artwork } from '../../data/artworks';
 
 function StoryGalleryContent() {
   const searchParams = useSearchParams();

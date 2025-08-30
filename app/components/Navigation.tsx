@@ -7,7 +7,7 @@ import { clsx } from 'clsx';
 import { useRouter } from 'next/navigation';
 import AnimatedText, { GradientText } from './AnimatedText';
 
-type ViewMode = 'grid' | 'central';
+type ViewMode = 'grid' | 'central' | 'story';
 
 interface NavigationProps {
   currentView: ViewMode;
