@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Menu } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useRouter } from 'next/navigation';
-import AnimatedText, { GradientText } from './AnimatedText';
+
 
 type ViewMode = 'grid' | 'central' | 'story';
 
