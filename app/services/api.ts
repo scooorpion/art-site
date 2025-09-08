@@ -35,20 +35,18 @@ export const getMediaUrl = (url: string) => {
   
   // 在浏览器环境中
   if (typeof window !== 'undefined') {
-    if (process.env.NODE_ENV === 'production') {
-      // 生产环境使用相对路径
-      return url.startsWith('/') ? url : `/${url}`;
-    }
-    // 开发环境
-    return `http://localhost:1337${url.startsWith('/') ? url : `/${url}`}`;
+    // 生产环境和开发环境都使用相对路径，通过nginx代理
+    return url.startsWith('/') ? url : `/${url}`;
   }
   
-  // 服务器端
-  const baseUrl = process.env.NODE_ENV === 'production' 
-    ? (process.env.NEXT_PUBLIC_STRAPI_URL || 'http://strapi:1337')
-    : 'http://localhost:1337';
-    
-  return `${baseUrl}${url.startsWith('/') ? url : `/${url}`}`;
+  // 服务器端（SSR）
+  if (process.env.NODE_ENV === 'production') {
+    // 生产环境服务器端使用Docker内部地址
+    return `http://strapi:1337${url.startsWith('/') ? url : `/${url}`}`;
+  }
+  
+  // 开发环境服务器端
+  return `http://localhost:1337${url.startsWith('/') ? url : `/${url}`}`;
 };
 
 // API 请求封装
