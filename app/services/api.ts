@@ -12,19 +12,14 @@ const getApiUrl = () => {
     return 'http://localhost:1337/api';
   }
   
-  // 在服务器端（SSR）
-  if (process.env.NODE_ENV === 'production') {
-    // Docker 环境中的内部服务通信
-    return process.env.NEXT_PUBLIC_STRAPI_URL || 'http://strapi:1337/api';
-  }
-  
-  // 开发环境
-  return 'http://localhost:1337/api';
+  // 在服务器端（SSR）- Docker 环境中的内部服务通信
+  // 无论是生产还是开发环境，在 Docker 容器内部都使用内部 URL
+  return process.env.NEXT_PUBLIC_STRAPI_URL ? `${process.env.NEXT_PUBLIC_STRAPI_URL}/api` : 'http://strapi:1337/api';
 };
 
 export const API_URL = getApiUrl();
 
-// 获取完整的媒体文件 URL
+// 获取媒体文件 URL（返回相对路径，让OptimizedImage组件处理完整URL构建）
 export const getMediaUrl = (url: string) => {
   if (!url) return '';
   
@@ -33,20 +28,8 @@ export const getMediaUrl = (url: string) => {
     return url;
   }
   
-  // 在浏览器环境中
-  if (typeof window !== 'undefined') {
-    // 生产环境和开发环境都使用相对路径，通过nginx代理
-    return url.startsWith('/') ? url : `/${url}`;
-  }
-  
-  // 服务器端（SSR）
-  if (process.env.NODE_ENV === 'production') {
-    // 生产环境服务器端使用Docker内部地址
-    return `http://strapi:1337${url.startsWith('/') ? url : `/${url}`}`;
-  }
-  
-  // 开发环境服务器端
-  return `http://localhost:1337${url.startsWith('/') ? url : `/${url}`}`;
+  // 返回相对路径，让OptimizedImage组件处理完整URL构建
+  return url.startsWith('/') ? url : `/${url}`;
 };
 
 // API 请求封装

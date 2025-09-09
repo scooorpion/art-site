@@ -32,7 +32,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
   }, []);
   
   // 使用useMemo缓存图片URL数组，避免每次渲染都重新计算
-  const imageUrls = useMemo(() => artworks.map(artwork => artwork.image), [artworks]);
+  const imageUrls = useMemo(() => artworks.filter(artwork => artwork && artwork.image).map(artwork => artwork.image), [artworks]);
   
   // 获取所有图片的尺寸信息
   const imageDimensions = useMultipleImageDimensions();
@@ -69,6 +69,18 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [handleResize]);
+  
+  // 如果没有作品数据，显示空状态
+  if (!artworks || artworks.length === 0) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-gray-600 dark:text-gray-400 text-lg mb-4">暂无作品</div>
+          <div className="text-gray-500 dark:text-gray-500 text-sm">请稍后再试或联系管理员</div>
+        </div>
+      </div>
+    );
+  }
 
 
 
@@ -156,6 +168,9 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
       }
       
       const artwork = artworks[index];
+      if (!artwork || !artwork.image) {
+        return { width: '192px', height: '256px' };
+      }
       const dimensions = imageDimensions.dimensionsMap[artwork.image];
       if (!dimensions) {
         return { width: '192px', height: '256px' };
@@ -175,6 +190,10 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
     return artworks.map((artwork) => {
       // 在水合完成前使用固定样式
       if (!isHydrated) {
+        return { width: '80px', height: '96px' };
+      }
+      
+      if (!artwork || !artwork.image) {
         return { width: '80px', height: '96px' };
       }
       
@@ -207,6 +226,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
             {/* 左侧图片 */}
             {sideArtworks.filter(({ position }) => position === 'left').reverse().map(({ index }) => {
                const artwork = artworks[index];
+               if (!artwork || !artwork.image) return null;
                const artworkDimensions = imageDimensions.dimensionsMap[artwork.image];
                return (
                  <motion.div
@@ -261,6 +281,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
             {/* 右侧图片 */}
             {sideArtworks.filter(({ position }) => position === 'right').map(({ index }) => {
                const artwork = artworks[index];
+               if (!artwork || !artwork.image) return null;
                const artworkDimensions = imageDimensions.dimensionsMap[artwork.image];
                return (
                  <motion.div

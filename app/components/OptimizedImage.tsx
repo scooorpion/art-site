@@ -39,6 +39,21 @@ export default function OptimizedImage({
 }: OptimizedImageProps) {
   const [hasError, setHasError] = useState(false);
 
+  // 构建完整的图片URL
+  // 由于禁用了图片优化，统一使用公共URL
+  const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_BASE_URL;
+  const fullImageUrl = src.startsWith('/') 
+    ? `${strapiUrl}${src}`
+    : src;
+  
+  // 调试信息
+  console.log('OptimizedImage Debug:', {
+    originalSrc: src,
+    strapiUrl,
+    fullImageUrl,
+    startsWithSlash: src.startsWith('/')
+  });
+
   const handleError = () => {
     setHasError(true);
   };
@@ -67,7 +82,7 @@ export default function OptimizedImage({
 
       {!hasError && (
         <Image
-          src={src}
+          src={fullImageUrl}
           alt={alt}
           width={fill ? undefined : width}
           height={fill ? undefined : height}
