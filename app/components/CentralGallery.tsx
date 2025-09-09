@@ -130,14 +130,28 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
 
   // 获取侧边显示的作品索引
   const getSideArtworks = useMemo(() => {
-    const sideCount = 3;
-    const result = [];
+    const result: { index: number; position: 'left' | 'right'; offset: number }[] = [];
     
-    for (let i = 1; i <= sideCount; i++) {
+    if (artworks.length <= 1) {
+      // 只有1张或没有图片时，不显示侧边图片
+      return result;
+    }
+    
+    // 计算每边最多可以显示的图片数量，避免重复
+    // 总图片数减去当前图片，然后除以2（左右两边）
+    const maxSideCount = Math.min(3, Math.floor((artworks.length - 1) / 2));
+    
+    for (let i = 1; i <= maxSideCount; i++) {
       const leftIndex = (currentIndex - i + artworks.length) % artworks.length;
       const rightIndex = (currentIndex + i) % artworks.length;
-      result.push({ index: leftIndex, position: 'left', offset: i });
-      result.push({ index: rightIndex, position: 'right', offset: i });
+      
+      // 确保左右索引不重复且不等于当前索引
+      if (leftIndex !== currentIndex && leftIndex !== rightIndex) {
+        result.push({ index: leftIndex, position: 'left', offset: i });
+      }
+      if (rightIndex !== currentIndex && rightIndex !== leftIndex) {
+        result.push({ index: rightIndex, position: 'right', offset: i });
+      }
     }
     
     return result;
