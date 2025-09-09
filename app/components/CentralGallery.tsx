@@ -69,20 +69,6 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [handleResize]);
-  
-  // 如果没有作品数据，显示空状态
-  if (!artworks || artworks.length === 0) {
-    return (
-      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-gray-600 dark:text-gray-400 text-lg mb-4">暂无作品</div>
-          <div className="text-gray-500 dark:text-gray-500 text-sm">请稍后再试或联系管理员</div>
-        </div>
-      </div>
-    );
-  }
-
-
 
   // 自动播放功能
   useEffect(() => {
@@ -122,23 +108,6 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [goToPrevious, goToNext, isAutoPlay]);
 
-  // 获取侧边显示的作品索引
-  const getSideArtworks = () => {
-    const sideCount = 3;
-    const result = [];
-    
-    for (let i = 1; i <= sideCount; i++) {
-      const leftIndex = (currentIndex - i + artworks.length) % artworks.length;
-      const rightIndex = (currentIndex + i) % artworks.length;
-      result.push({ index: leftIndex, position: 'left', offset: i });
-      result.push({ index: rightIndex, position: 'right', offset: i });
-    }
-    
-    return result;
-  };
-
-  const sideArtworks = getSideArtworks();
-
   // 使用useMemo缓存主作品的动态样式计算
   const mainImageStyles = useMemo(() => {
     // 在水合完成前使用固定样式，避免服务端客户端不匹配
@@ -159,9 +128,24 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
     );
   }, [isHydrated, currentImageDimensions.dimensions, layoutConfig.central.main]);
 
+  // 获取侧边显示的作品索引
+  const getSideArtworks = useMemo(() => {
+    const sideCount = 3;
+    const result = [];
+    
+    for (let i = 1; i <= sideCount; i++) {
+      const leftIndex = (currentIndex - i + artworks.length) % artworks.length;
+      const rightIndex = (currentIndex + i) % artworks.length;
+      result.push({ index: leftIndex, position: 'left', offset: i });
+      result.push({ index: rightIndex, position: 'right', offset: i });
+    }
+    
+    return result;
+  }, [currentIndex, artworks.length]);
+
   // 使用useMemo缓存侧边作品的动态样式计算
   const sideImageStyles = useMemo(() => {
-    return sideArtworks.map(({ index }) => {
+    return getSideArtworks.map(({ index }) => {
       // 在水合完成前使用固定样式
       if (!isHydrated) {
         return { width: '192px', height: '256px' };
@@ -183,7 +167,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
         )
       );
     });
-  }, [isHydrated, sideArtworks, artworks, imageDimensions.dimensionsMap, layoutConfig.central.side]);
+  }, [isHydrated, getSideArtworks, artworks, imageDimensions.dimensionsMap, layoutConfig.central.side]);
 
   // 使用useMemo缓存底部缩略图的动态样式计算
   const thumbnailStyles = useMemo(() => {
@@ -216,6 +200,18 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
     });
   }, [isHydrated, artworks, imageDimensions.dimensionsMap]);
 
+  // 如果没有作品数据，显示空状态
+  if (!artworks || artworks.length === 0) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-gray-600 dark:text-gray-400 text-lg mb-4">暂无作品</div>
+          <div className="text-gray-500 dark:text-gray-500 text-sm">请稍后再试或联系管理员</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white dark:bg-black text-gray-800 dark:text-white">
         <div className="relative h-screen flex flex-col">
@@ -224,7 +220,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
           {/* 平铺式图片展示 */}
           <div className="flex items-center justify-center gap-6 overflow-x-hidden px-4">
             {/* 左侧图片 */}
-            {sideArtworks.filter(({ position }) => position === 'left').reverse().map(({ index }) => {
+            {getSideArtworks.filter(({ position }) => position === 'left').reverse().map(({ index }) => {
                const artwork = artworks[index];
                if (!artwork || !artwork.image) return null;
                const artworkDimensions = imageDimensions.dimensionsMap[artwork.image];
@@ -279,7 +275,7 @@ export default function CentralGallery({ artworks, onArtworkClick }: CentralGall
             </motion.div>
             
             {/* 右侧图片 */}
-            {sideArtworks.filter(({ position }) => position === 'right').map(({ index }) => {
+            {getSideArtworks.filter(({ position }) => position === 'right').map(({ index }) => {
                const artwork = artworks[index];
                if (!artwork || !artwork.image) return null;
                const artworkDimensions = imageDimensions.dimensionsMap[artwork.image];
